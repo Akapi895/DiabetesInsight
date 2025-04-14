@@ -1,0 +1,212 @@
+.patient-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .patient-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .patient-list-header h1 {
+    color: #2c3e50;
+    margin: 0;
+  }
+  
+  .actions-container {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .search-container {
+    position: relative;
+    min-width: 250px;
+  }
+  
+  .search-input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .add-patient-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+  }
+  
+  .add-patient-button:hover {
+    background-color: #2980b9;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .patient-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+  }
+  
+  .patient-table th,
+  .patient-table td {
+    padding: 15px;
+    text-align: center; /* Thay đổi từ left sang center để căn giữa */
+    border-bottom: 1px solid #e1e1e1;
+    vertical-align: middle; /* Đảm bảo nội dung căn giữa theo chiều dọc */
+  }
+  
+  .patient-table th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+  
+  .patient-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .patient-table tbody tr:hover {
+    background-color: #f1f8ff;
+  }
+  
+  /* Giữ cột tên bên trái vì có avatar */
+  .patient-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
+    text-align: left;
+    height: 100%;         /* Đảm bảo chiều cao lấp đầy ô của bảng */
+    min-height: 36px;     /* Chiều cao tối thiểu khớp với kích thước avatar */
+}
+
+  .patient-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .risk-badge {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    display: inline-block; /* Đảm bảo badge hiển thị đúng khi căn giữa */
+  }
+  
+  .risk-low {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .risk-medium {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .risk-high {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  /* Căn giữa nút trong cột Actions */
+  td:last-child {
+    text-align: center;
+  }
+  
+  .view-button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .view-button:hover {
+    background-color: #27ae60;
+  }
+  
+  .loading-state,
+  .error-state,
+  .no-patients {
+    text-align: center;
+    padding: 50px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .loading-state {
+    color: #3498db;
+  }
+  
+  .error-state {
+    color: #e74c3c;
+  }
+  
+  .no-patients {
+    color: #7f8c8d;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 992px) {
+    .patient-table th,
+    .patient-table td {
+      padding: 12px 10px;
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .patient-list-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .actions-container {
+      width: 100%;
+    }
+    
+    .search-container {
+      width: 100%;
+    }
+    
+    .patient-table th,
+    .patient-table td {
+      padding: 10px 8px;
+      font-size: 14px;
+    }
+    
+    .patient-avatar {
+      width: 30px;
+      height: 30px;
+    }
+  }
