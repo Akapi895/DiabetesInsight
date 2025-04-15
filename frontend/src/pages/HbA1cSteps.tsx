@@ -40,6 +40,51 @@ const HbA1cSteps = () => {
   const [error, setError] = useState<string | null>(null);
   const [calculationResult, setCalculationResult] = useState<FuzzyCalculationResult | null>(null);
   const [activeStep, setActiveStep] = useState<ActiveStep>('summary');
+  const [updatingHbA1c, setUpdatingHbA1c] = useState<boolean>(false);
+
+  const handleUpdateHbA1c = async () => {
+    if (!patient || !calculationResult) return;
+    
+    try {
+      setUpdatingHbA1c(true);
+      
+      // Gọi API để cập nhật HbA1c target mới cho bệnh nhân
+      // Nếu đang trong môi trường development, giả lập việc cập nhật thành công
+      if (process.env.NODE_ENV === 'development') {
+        // Giả lập delay của API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log(`Updated HbA1c target for patient ${patient.id} to ${calculationResult.hba1cTarget}%`);
+      } else {
+        // Gọi API thật để cập nhật
+        const response = await fetch(`http://localhost:5000/api/patients/${patient.id}/update-hba1c-target`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            hba1cTarget: calculationResult.hba1cTarget 
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to update HbA1c target');
+        }
+      }
+      
+      // Hiển thị thông báo thành công (nếu có UI thông báo)
+      // Có thể sử dụng toast notification hoặc alert
+      alert(`Đã cập nhật mục tiêu HbA1c thành ${calculationResult.hba1cTarget}% cho bệnh nhân ${patient.name}`);
+      
+      // Chuyển hướng về trang bệnh nhân
+      navigate(`/patients/${patient.id}`);
+      
+    } catch (error) {
+      console.error('Error updating HbA1c target:', error);
+      alert('Có lỗi xảy ra khi cập nhật mục tiêu HbA1c. Vui lòng thử lại sau.');
+    } finally {
+      setUpdatingHbA1c(false);
+    }
+  };
   
   // Refs cho charts
   const fuzzificationChartRefs = useRef<{ [key: string]: HTMLCanvasElement | null }>({
@@ -901,10 +946,11 @@ const HbA1cSteps = () => {
             Print Report
           </button>
           <button 
-            className="treatment-button"
-            onClick={() => navigate('/treatment-guideline')}
+            className="update-hba1c-button"
+            onClick={handleUpdateHbA1c}
+            disabled={updatingHbA1c}
           >
-            View Treatment Guidelines
+            {updatingHbA1c ? 'Đang cập nhật...' : 'Cập nhật mục tiêu HbA1c'}
           </button>
         </div>
       </div>
