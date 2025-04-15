@@ -454,8 +454,12 @@
   /* Ô tùy chọn */
   .option-cell {
     position: relative;
-    cursor: default;
+    cursor: pointer;
     width: 14%;
+    transition: background-color 0.2s;
+  }
+  .option-cell:hover {
+    background-color: #f1f8ff; /* Màu nền khi hover */
   }
   
   .option-marker {
@@ -465,11 +469,14 @@
     margin: 0 auto;
     background-color: #f1f1f1;
     border: 1px solid #ddd;
+    transition: all 0.2s;
   }
   
   .option-cell.selected .option-marker {
     background-color: #3498db;
     border-color: #2980b9;
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
   }
   
   .option-cell:nth-child(2) .option-marker {
@@ -485,19 +492,23 @@
   }
   
   .option-cell:nth-child(5) .option-marker {
-    background-color: #f8d7da;
+    background-color: #ffe5e5;
   }
   
   .option-cell:nth-child(6) .option-marker {
     background-color: #f8d7da;
-    opacity: 0.8;
   }
   
+  /* Khi được chọn, làm nổi bật rõ hơn */
+  .option-cell.selected {
+    background-color: rgba(52, 152, 219, 0.1);
+  }
+/*   
   .option-cell.selected .option-marker {
     border: 2px solid #333;
     transform: scale(1.1);
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
-  }
+  } */
   
   /* Khu vực tính toán HbA1c */
   .target-calculation {
@@ -575,3 +586,122 @@
   .scale-value {
     color: #7f8c8d;
   }
+
+/* Styling cho checkbox */
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 23px !important;
+  height: 23px !important;
+  cursor: pointer;
+}
+
+.checkbox-item label {
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* Kiểu dáng cho checkbox đã chọn */
+.checkbox-item input[type="checkbox"]:checked + label {
+  font-weight: 600;
+  color: #3498db;
+}
+
+/* Kiểu dáng cho danh sách thuốc */
+.drugs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.drug-checkbox-item {
+  min-width: 200px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.drug-checkbox-item input[type="checkbox"]:checked + label {
+  color: #2980b9;
+}
+
+/* Kiểu dáng cho nút hành động */
+.history-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.save-history-button,
+.reset-history-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.save-history-button {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.save-history-button:hover {
+  background-color: #27ae60;
+}
+
+.reset-history-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.reset-history-button:hover {
+  background-color: #c0392b;
+}
+
+/* Custom style cho checkbox hiện đại */
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+  .checkbox-item input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 2px solid #cbd5e0;
+    background-color: white;
+    position: relative;
+  }
+  
+  .checkbox-item input[type="checkbox"]:checked {
+    background-color: #3498db;
+    border-color: #2980b9;
+  }
+  
+  .checkbox-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+}
