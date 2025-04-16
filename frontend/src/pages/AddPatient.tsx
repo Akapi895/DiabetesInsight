@@ -59,17 +59,18 @@ const AddPatient = () => {
         }
       });
 
-      // TODO: Replace with your API endpoint
-      const response = await fetch('http://localhost:5000/api/patients', {
+      const response = await fetch('http://127.0.0.1:8000/api/patients/add', {
         method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
-        alert('Patient added successfully!');
-        navigate('/patients'); // Redirect to patients list page
+        const result = await response.json();
+        alert(`Patient added successfully! ID: ${result.patient_id}`);
+        navigate('/');
       } else {
-        alert('Failed to add patient.');
+        const errorData = await response.json();
+        alert(`Failed to add patient: ${errorData.detail}`);
       }
     } catch (error) {
       console.error('Error adding patient:', error);

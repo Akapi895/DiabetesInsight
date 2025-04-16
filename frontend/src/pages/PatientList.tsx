@@ -20,29 +20,29 @@ const PatientList = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const navigate = useNavigate();
 
-//   useEffect(() => {
-//     const fetchPatients = async () => {
-//       try {
-//         setLoading(true);
-//         // Replace with your actual API endpoint
-//         const response = await fetch('http://localhost:5000/api/patients');
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        setLoading(true);
+        // API endpoint thực
+        const response = await fetch('http://127.0.0.1:8000/api/patients/all');
         
-//         if (!response.ok) {
-//           throw new Error('Failed to fetch patients');
-//         }
+        if (!response.ok) {
+          throw new Error('Failed to fetch patients');
+        }
         
-//         const data = await response.json();
-//         setPatients(data);
-//         setLoading(false);
-//       } catch (err) {
-//         setError('Error fetching patient data. Please try again later.');
-//         setLoading(false);
-//         console.error('Error fetching patients:', err);
-//       }
-//     };
-
-//     fetchPatients();
-//   }, []);
+        const data = await response.json();
+        setPatients(data);
+        setLoading(false);
+      } catch (err) {
+        setError('Error fetching patient data. Please try again later.');
+        setLoading(false);
+        console.error('Error fetching patients:', err);
+      }
+    };
+  
+    fetchPatients();
+  }, []);
 
   // For demo purposes, using mock data if API is not ready
   useEffect(() => {
@@ -107,6 +107,7 @@ const PatientList = () => {
   );
 
   const handleViewPatient = (id: string) => {
+    console.log(`Viewing details for patient ID: ${id}`);
     navigate(`/patients/${id}`);
   };
 

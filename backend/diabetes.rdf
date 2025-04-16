@@ -1,0 +1,848 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes/"
+     xml:base="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:diabetes="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Not_recommended -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Not_recommended">
+        <rdfs:domain>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Not_recommended"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+            </owl:Restriction>
+        </rdfs:domain>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Not_recommended"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Advantages -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Advantages">
+        <rdfs:domain>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Advantages"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+            </owl:Restriction>
+        </rdfs:domain>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Advantages"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Adverse_Drug_Reactions -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Adverse_Drug_Reactions">
+        <rdfs:domain>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Adverse_Drug_Reactions"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+            </owl:Restriction>
+        </rdfs:domain>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Adverse_Drug_Reactions"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Disadvantages -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Disadvantages">
+        <rdfs:domain>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Disadvantages"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+            </owl:Restriction>
+        </rdfs:domain>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_Disadvantages"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_History_of_Diseases -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_History_of_Diseases">
+        <rdfs:domain>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_History_of_Diseases"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+            </owl:Restriction>
+        </rdfs:domain>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#has_History_of_Diseases"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Age -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Age">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Bone -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Bone">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#CVD -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#CVD">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Disease_Duration -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Disease_Duration">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#GI_Sx -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#GI_Sx">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gender -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gender"/>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#HbA1c_Level -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#HbA1c_Level">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypo -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypo">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Important_Comorbidities -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Important_Comorbidities">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Life_Expectancy -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Life_Expectancy">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Name">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Others -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Others">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_Attitude -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_Attitude">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_ID -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_ID">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Risk_of_Hypoglycemia -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Risk_of_Hypoglycemia">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Type_of_Diabetes -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Type_of_Diabetes">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vascular_Complications -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vascular_Complications">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Weight -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Weight">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Adverse_Drug_Reactions_(ADRs) -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Adverse_Drug_Reactions_(ADRs)">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Renal/GU -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Renal/GU">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#topDataProperty -->
+
+    <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#topDataProperty">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Cellular_mechanisms -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Cellular_mechanisms">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Compounds -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Compounds">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Cost -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Cost">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Primary_physiological_actions -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Primary_physiological_actions">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Acute_pancreatitis -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Acute_pancreatitis">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Associated_with_lower_CVD_event_rate_and_mortality_in_patients -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Associated_with_lower_CVD_event_rate_and_mortality_in_patients">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Associated_with_lower_CV_event_rate_and_mortality_in_patients -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Associated_with_lower_CV_event_rate_and_mortality_in_patients">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Bone_fractures -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Bone_fractures">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_CKD -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_CKD">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_acidosis -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_acidosis">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_dehydration -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_dehydration">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_hyproxia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_hyproxia">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_BP -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_BP">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_CVD_events_UKPDS -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_CVD_events_UKPDS">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Microvascular_risk -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Microvascular_risk">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Postprandial_glucose_excursions -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Postprandial_glucose_excursions">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Some_CV_risk_factors -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Some_CV_risk_factors">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_TGs -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_TGs">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Weight -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Weight">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_risk_of_stroke_and_I_in_pts._Without_diabetes_and_with_insulion_resistance_and_a_history_of -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_risk_of_stroke_and_I_in_pts._Without_diabetes_and_with_insulion_resistance_and_a_history_of">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Durability -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Durability">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Extensive_experience -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Extensive_experience">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#GLP-1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#GLP-1">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#GU_infections -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#GU_infections">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gastrointestina -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gastrointestina">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gastrointestinal_side_effects -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gastrointestinal_side_effects">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Heart_failure_hospitalizations -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Heart_failure_hospitalizations">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Heart_rate -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Heart_rate">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_LDL-C -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_LDL-C">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Weight -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Weight">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Injectable -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Injectable">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#MET -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#MET">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+        <diabetes:has_Advantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_CVD_events_UKPDS"/>
+        <diabetes:has_Advantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Extensive_experience"/>
+        <diabetes:has_Advantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Rare_hypoglycemia"/>
+        <diabetes:has_Advantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Relatively_higher_A1C_efficacy"/>
+        <diabetes:has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_CKD"/>
+        <diabetes:has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_acidosis"/>
+        <diabetes:has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_dehydration"/>
+        <diabetes:has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Contraindications_hyproxia"/>
+        <diabetes:has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gastrointestina"/>
+        <diabetes:has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vitamin_B12_deficiency_Lactic_acidosis"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Nearly_universal_response -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Nearly_universal_response">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient1">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patients"/>
+        <diabetes:Age rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">56</diabetes:Age>
+        <diabetes:Disease_Duration>Newly diagnosed years</diabetes:Disease_Duration>
+        <diabetes:HbA1c_Level rdf:datatype="http://www.w3.org/2001/XMLSchema#double">7.2</diabetes:HbA1c_Level>
+        <diabetes:Important_Comorbidities>Mild</diabetes:Important_Comorbidities>
+        <diabetes:Life_Expectancy>Long</diabetes:Life_Expectancy>
+        <diabetes:Name>John Smith</diabetes:Name>
+        <diabetes:Patient_Attitude>Highly motivated</diabetes:Patient_Attitude>
+        <diabetes:Patient_ID>PT001</diabetes:Patient_ID>
+        <diabetes:Risk_of_Hypoglycemia>Low</diabetes:Risk_of_Hypoglycemia>
+        <diabetes:Type_of_Diabetes>Type 2</diabetes:Type_of_Diabetes>
+        <diabetes:Vascular_Complications>None</diabetes:Vascular_Complications>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_and_Provider_reluctance -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_and_Provider_reluctance">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Polyuria -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Polyuria">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Rare_hypoglycemia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Rare_hypoglycemia">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+        <diabetes:has_Advantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_CVD_events_UKPDS"/>
+        <diabetes:has_Advantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Rare_hypoglycemia"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Relatively_higher_A1C_efficacy -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Relatively_higher_A1C_efficacy">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#SU -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#SU">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Theoretically_unlimited_efficacy -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Theoretically_unlimited_efficacy">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Training_requirements -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Training_requirements">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vitamin_B12_deficiency -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vitamin_B12_deficiency">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vitamin_B12_deficiency_Lactic_acidosis -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Vitamin_B12_deficiency_Lactic_acidosis">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Weight_gain -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Weight_gain">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Well_tolerated -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Well_tolerated">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Angioedema_/_urticariaand_other_immune_medicated_dermatological_effects -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Angioedema_/_urticariaand_other_immune_medicated_dermatological_effects">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#C-cell_hyperplasia/medullary_thyroid_tumors_in_animals -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#C-cell_hyperplasia/medullary_thyroid_tumors_in_animals">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#DKA,_urinary_tract_infections_leading_to_urosepsis,_pyelonephritis -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#DKA,_urinary_tract_infections_leading_to_urosepsis,_pyelonephritis">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_CVD_events_pio,_PROactive -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_CVD_events_pio,_PROactive">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Microvascular_risk:UKPDS -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Microvascular_risk:UKPDS">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Edema/heart_failure -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Edema/heart_failure">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Cr:transient -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_Cr:transient">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_LDL-C_:rosi -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Increase_LDL-C_:rosi">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Injectable:except_inhalable -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Injectable:except_inhalable">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Pulmonary_toxicity:inhaled_insulin -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Pulmonary_toxicity:inhaled_insulin">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Volume_depletion/hypotention/dizziness -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Volume_depletion/hypotention/dizziness">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+
