@@ -430,3 +430,175 @@ def update_hba1c_logic(patient_id: int, hba1c_level: float) -> dict:
             conn.close()
         print(f"Error updating HbA1c: {e}")
         raise Exception(f"Error updating HbA1c: {e}")
+
+def get_patient_history_logic(patient_id: int) -> dict:
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Kiểm tra xem bệnh nhân có tồn tại không
+        cursor.execute(
+            "SELECT COUNT(*) FROM personal WHERE patient_id = ?",
+            (patient_id,)
+        )
+        
+        if cursor.fetchone()[0] == 0:
+            conn.close()
+            raise Exception(f"Patient with ID {patient_id} not found")
+        
+        # 1. Lấy phản ứng phụ từ bảng adverse_reaction
+        cursor.execute(
+            """
+            SELECT drug
+            FROM adverse_reaction 
+            WHERE patient_id = ?
+            """, 
+            (patient_id,)
+        )
+        
+        adrs = []
+        for row in cursor.fetchall():
+            adrs.append(row["drug"])
+        
+        # 2. Lấy tiền sử bệnh từ bảng medical_history và nhóm theo category
+        cursor.execute(
+            """
+            SELECT category, condition
+            FROM medical_history 
+            WHERE patient_id = ?
+            """, 
+            (patient_id,)
+        )
+        
+        # Khởi tạo các danh mục CHÍNH XÁC như trong frontend
+        history_categories = {
+            "cvd": [],
+            "renalGu": [],
+            "others": [],
+            "hypo": [],
+            "weight": [],
+            "bone": [],
+            "giSx": [],
+            "chf": []
+        }
+        
+        # Phân loại theo danh mục - KHÔNG chuyển sang lowercase
+        for row in cursor.fetchall():
+            category = row["category"]  # Giữ nguyên case
+            condition = row["condition"]
+            
+            # Kiểm tra xem category có hợp lệ không và thêm vào danh mục tương ứng
+            if category in history_categories:
+                history_categories[category].append(condition)
+            else:
+                # Nếu category không khớp với danh mục nào, đưa vào "others"
+                print(f"Category not recognized: {category}, adding to others")  # Debug line
+                history_categories["others"].append(condition)
+        
+        # Đóng kết nối database
+        conn.close()
+        
+        # Tạo kết quả cuối cùng bao gồm cả phản ứng phụ
+        result = {
+            **history_categories,
+            "adrs": adrs
+        }
+        
+        return result
+        
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        raise Exception(f"Database error: {e}")
+        
+    except Exception as e:
+        print(f"Error fetching patient history: {e}")
+        raise Exception(f"Error fetching patient history: {e}")
+        
+def update_patient_history_logic(patient_id: int, history_data: dict) -> dict:
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        # Kiểm tra xem bệnh nhân có tồn tại không
+        cursor.execute(
+            "SELECT COUNT(*) FROM personal WHERE patient_id = ?",
+            (patient_id,)
+        )
+        
+        if cursor.fetchone()[0] == 0:
+            conn.close()
+            raise Exception(f"Patient with ID {patient_id} not found")
+        
+        # Xóa tất cả lịch sử bệnh hiện tại
+        cursor.execute(
+            "DELETE FROM medical_history WHERE patient_id = ?",
+            (patient_id,)
+        )
+        
+        # Xóa tất cả phản ứng phụ hiện tại
+        cursor.execute(
+            "DELETE FROM adverse_reaction WHERE patient_id = ?",
+            (patient_id,)
+        )
+        
+        # Thêm lịch sử bệnh mới
+        history_items = []
+        
+        # Trực tiếp sử dụng keys từ history_data để tránh mất thông tin
+        medical_categories = [
+            "cvd", "renalGu", "others", "hypo", 
+            "weight", "bone", "giSx", "chf"
+        ]
+        
+        for category in medical_categories:
+            if category in history_data and isinstance(history_data[category], list):
+                for condition in history_data[category]:
+                    # Lưu trữ chính xác tên category như được gửi từ frontend
+                    history_items.append((patient_id, category, condition))
+                    print(f"Adding to {category}: {condition}")  # Debug line
+        
+        if history_items:
+            cursor.executemany(
+                "INSERT INTO medical_history (patient_id, category, condition) VALUES (?, ?, ?)",
+                history_items
+            )
+        
+        # Thêm phản ứng phụ mới
+        adr_items = []
+        if "adrs" in history_data and isinstance(history_data["adrs"], list):
+            for drug in history_data["adrs"]:
+                adr_items.append((patient_id, drug))
+        
+        if adr_items:
+            cursor.executemany(
+                "INSERT INTO adverse_reaction (patient_id, drug) VALUES (?, ?)",
+                adr_items
+            )
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            "message": "Patient history updated successfully",
+            "patient_id": patient_id,
+            "items_saved": {
+                "medical_history": len(history_items),
+                "adverse_reactions": len(adr_items),
+                "categories": {category: len(history_data.get(category, [])) for category in medical_categories}
+            }
+        }
+        
+    except sqlite3.Error as e:
+        if conn:
+            conn.rollback()
+            conn.close()
+        print(f"Database error: {e}")
+        raise Exception(f"Database error: {e}")
+        
+    except Exception as e:
+        if conn:
+            conn.close()
+        print(f"Error updating patient history: {e}")
+        raise Exception(f"Error updating patient history: {e}")
+       

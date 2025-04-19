@@ -91,6 +91,113 @@ const PatientDetail = () => {
     }));
   };
 
+  const defaultMedicalHistory: {
+    cvd: string[];
+    renalGu: string[];
+    others: string[];
+    hypo: string[];
+    weight: string[];
+    bone: string[];
+    giSx: string[];
+    chf: string[];
+    adrs: string[];
+    [key: string]: string[]; // Add this index signature
+  } = {
+    cvd: [
+      'Blunt myocardial ischemic preconditioning', 'Increase Heart rate', 
+      'Icnrease LDL-C', 'Ml', 'Volume depletion/hypotension/dizziness',
+      'Contraindications hyproxia', 'Contraindications dehydration'
+    ],
+    renalGu: [
+      'Increase Cr: transient', 'Lactic acidosis risk:rare',
+      'Contraindications CKD', 'Contraindications acidosis',
+      'Genitourinary infections', 'Polyuria'
+    ],
+    others: [
+      'Low durability', 'Angioedema/urticaria', 'Injectable',
+      'C-cell hyperplasia/medullary thypoid tumors', 'Mitogenic effects',
+      'Training requirements',  'Patient reluctance about injection'
+    ],
+    hypo: ['Hypoglycemia'],
+    weight: ['Weight gain'],
+    bone: ['Bone fractures'],
+    giSx: ['Gastrointestinal', 'Acute pancreatitis', 'Vitamin B12 deficiency'],
+    chf: ['Edema', 'Heart failure', 'Heart failure hospitalizations'],
+    adrs: [
+      'Biguanides (MET)', 'Sulfonylureas (SU)', 
+      'TZDs', 'DPP-4', 'SGLT2', 'GLP-1', 'Insulins'
+    ]
+  };
+
+  const [historyData, setHistoryData] = useState({
+    cvd: [],
+    renalGu: [],
+    others: [],
+    hypo: [],
+    weight: [],
+    bone: [],
+    giSx: [],
+    chf: [],
+    adrs: []
+  });
+
+  // Thêm hàm này vào component PatientDetail
+  const handleSaveHistory = async () => {
+    if (!patient) return;
+    
+    try {
+      // Chuyển đổi từ checked items (true/false) thành danh sách các mục được chọn
+      const selectedItems: Record<string, string[]> = {
+        cvd: [],
+        renalGu: [],
+        others: [],
+        hypo: [],
+        weight: [],
+        bone: [],
+        giSx: [],
+        chf: [],
+        adrs: []
+      };
+      
+      // Lọc các mục đã được chọn (checked = true)
+      Object.keys(checkedItems).forEach(category => {
+        Object.entries(checkedItems[category]).forEach(([item, isChecked]) => {
+          if (isChecked) {
+            selectedItems[category].push(item);
+          }
+        });
+      });
+      
+      console.log('Selected items before API call:', selectedItems);
+
+      // Gọi API endpoint để cập nhật history
+      const response = await fetch('http://127.0.0.1:8000/api/patients/update/history', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patient_id: patient.id,
+          ...selectedItems
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('Patient history updated successfully:', result);
+      
+      // Hiển thị thông báo thành công
+      alert('Medical history and adverse reactions updated successfully.');
+      
+    } catch (error) {
+      console.error('Error updating patient history:', error);
+      alert('Error updating patient history. Please try again.');
+    }
+  };
+
   const handleOptionClick = (factor: string, value: number) => {
     setPatientFactors(prev => ({
       ...prev,
@@ -249,103 +356,89 @@ const PatientDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    if (patient) {
-      const initialCheckedItems = {
-        giSx: {},
-        cvd: {},
-        renalGu: {},
-        others: {},
-        hypo: {},
-        weight: {},
-        bone: {},
-        chf: {},
-        adrs: {}
-      };
-      setCheckedItems(initialCheckedItems);
-    }
-  }, [patient]);
-
-  useEffect(() => {
-    const fetchPatient = async () => {
+    const fetchPatientHistory = async () => {
       if (!id) return;
       
       try {
-        setLoading(true);
-        const response = await fetch(`http://127.0.0.1:8000/api/patients/${id}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch patient details');
-        }
-        
-        const data = await response.json();
-        
-        // Thêm mock data cho history vì API không có
-        const patientWithHistory = {
-          ...data,
-          cvd: [
-            'Blunt myocardial ischemic preconditioning', 'Increase Heart rate', 
-            'Icnrease LDL-C', 'Ml', 'Volume depletion/hypotension/dizziness',
-            'Contraindications hyproxia', 'Contraindications dehydration'
-          ],
-          renalGu: [
-            'Increase Cr: transient', 'Lactic acidosis risk:rare',
-            'Contraindications CKD', 'Contraindications acidosis',
-            'Genitourinary infections', 'Polyuria'
-          ],
-          others: [
-            'Low durability', 'Angioedema/urticaria', 'Injectable',
-            'C-cell hyperplasia/medullary thypoid tumors', 'Mitogenic effects',
-            'Training requirements',  'Patient reluctance about injection'
-          ],
-          hypo: ['Hypoglycemia'],
-          weight: ['Weight gain'],
-          bone: ['Bone fractures'],
-          giSx: ['Gastrointestinal', 'Acute pancreatitis', 'Vitamin B12 deficiency'],
-          chf: ['Edema', 'Heart failure', 'Heart failure hospitalizations'],
-          adrs: [
-            'Biguanides (MET)', 'Sulfonylureas (SU)', 
-            'TZDs', 'DPP-4', 'SGLT2', 'GLP-1', 'Insulins'
-          ]
+        // Khởi tạo checkedItems với defaultMedicalHistory và tất cả false
+        const initialCheckedItems: {[key: string]: {[key: string]: boolean}} = {
+          cvd: {},
+          renalGu: {},
+          others: {},
+          hypo: {},
+          weight: {},
+          bone: {},
+          giSx: {},
+          chf: {},
+          adrs: {}
         };
         
-        setPatient(patientWithHistory);
-        
-        if (data.diabetes) {
-          setPatientFactors({
-            hypoglycemiaRisk: data.diabetes.hypoglycemiaRisk,
-            diseaseDuration: data.diabetes.diseaseDuration,
-            lifeExpectancy: data.diabetes.lifeExpectancy,
-            comorbidities: data.diabetes.importantComorbidities,
-            vascularComplications: data.diabetes.vascularComplications,
-            patientAttitude: data.diabetes.patientAttitude,
-            resourcesSupport: data.diabetes.resourcesSupport
+        // Đặt tất cả các mục trong defaultMedicalHistory thành false ban đầu
+        Object.keys(defaultMedicalHistory).forEach(category => {
+          defaultMedicalHistory[category].forEach((item: string) => {
+            initialCheckedItems[category][item] = false;
           });
+        });
+        
+        // Lấy dữ liệu lịch sử từ API
+        const response = await fetch(`http://127.0.0.1:8000/api/patients/history/${id}`);
+        
+        if (response.ok) {
+          const apiHistoryData = await response.json();
+          console.log('Fetched patient history:', apiHistoryData);
+          
+          // Cập nhật historyData state với dữ liệu từ API (để debug/tham khảo)
+          setHistoryData(apiHistoryData);
+          
+          // Đánh dấu các checkbox cho các mục có trong API
+          Object.keys(apiHistoryData).forEach(category => {
+            if (Array.isArray(apiHistoryData[category])) {
+              apiHistoryData[category].forEach((item: string) => {
+                if (initialCheckedItems[category]) {
+                  initialCheckedItems[category][item] = true;
+                }
+              });
+            }
+          });
+        } else {
+          console.log('Could not fetch patient history. Using default unchecked values.');
         }
         
-        setError(null);
-      } catch (err) {
-        setError('Error fetching patient details. Please try again later.');
-        console.error('Error fetching patient:', err);
-      } finally {
-        setLoading(false);
+        // Cập nhật trạng thái checkedItems
+        setCheckedItems(initialCheckedItems);
+        
+      } catch (error) {
+        console.error('Error in fetchPatientHistory:', error);
+        
+        // Khởi tạo checkedItems với defaultMedicalHistory và tất cả false
+        const initialCheckedItems: {[key: string]: {[key: string]: boolean}} = {
+          cvd: {},
+          renalGu: {},
+          others: {},
+          hypo: {},
+          weight: {},
+          bone: {},
+          giSx: {},
+          chf: {},
+          adrs: {}
+        };
+        
+        // Đặt tất cả các mục trong defaultMedicalHistory thành false
+        Object.keys(defaultMedicalHistory).forEach(category => {
+          defaultMedicalHistory[category].forEach((item: string) => {
+            initialCheckedItems[category][item] = false;
+          });
+        });
+        
+        setCheckedItems(initialCheckedItems);
       }
     };
-  
-    fetchPatient();
-  }, [id]);
 
-  const getRiskClass = (risk: string): string => {
-    switch (risk.toLowerCase()) {
-      case 'low':
-        return 'risk-low';
-      case 'medium':
-        return 'risk-medium';
-      case 'high':
-        return 'risk-high';
-      default:
-        return '';
+    // Gọi hàm khi id thay đổi và khi activeTab là 'history'
+    if (activeTab === 'history') {
+      fetchPatientHistory();
     }
-  };
+  }, [id, activeTab]);
 
   const savePatientToSession = () => {
     if (patient) {
@@ -895,7 +988,7 @@ const PatientDetail = () => {
                 <div className="history-item">
                   <h3>Hypo</h3>
                   <div className="checkbox-list">
-                    {patient.hypo.map((item, index) => (
+                    {defaultMedicalHistory.hypo.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -908,10 +1001,11 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>Weight</h3>
                   <div className="checkbox-list">
-                    {patient.weight.map((item, index) => (
+                    {defaultMedicalHistory.weight.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -924,10 +1018,11 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>Bone</h3>
                   <div className="checkbox-list">
-                    {patient.bone.map((item, index) => (
+                    {defaultMedicalHistory.bone.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -940,10 +1035,11 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>CVD</h3>
                   <div className="checkbox-list">
-                    {patient.cvd.map((item, index) => (
+                    {defaultMedicalHistory.cvd.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -956,10 +1052,11 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>Renal/GU</h3>
                   <div className="checkbox-list">
-                    {patient.renalGu.map((item, index) => (
+                    {defaultMedicalHistory.renalGu.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -972,10 +1069,11 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>Others</h3>
                   <div className="checkbox-list">
-                    {patient.others.map((item, index) => (
+                    {defaultMedicalHistory.others.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -988,10 +1086,11 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>GI Sx</h3>
                   <div className="checkbox-list">
-                    {patient.giSx.map((item, index) => (
+                    {defaultMedicalHistory.giSx.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -1004,15 +1103,16 @@ const PatientDetail = () => {
                     ))}
                   </div>
                 </div>
+                
                 <div className="history-item">
                   <h3>CHF</h3>
                   <div className="checkbox-list">
-                    {patient.chf.map((item, index) => (
+                    {defaultMedicalHistory.chf.map((item, index) => (
                       <div key={index} className="checkbox-item">
                         <input
                           type="checkbox"
                           id={`chf-${index}`}
-                          checked={!!checkedItems.bone[item]}
+                          checked={!!checkedItems.chf[item]}
                           onChange={() => handleCheckboxChange('chf', item)}
                         />
                         <label htmlFor={`chf-${index}`}>{item}</label>
@@ -1024,7 +1124,7 @@ const PatientDetail = () => {
                 <div className="history-item history-item-wide">
                   <h3>Adverse Drug Reactions (ADRs)</h3>
                   <div className="checkbox-list drugs-list">
-                    {patient.adrs.map((item, index) => (
+                    {defaultMedicalHistory.adrs.map((item, index) => (
                       <div key={index} className="checkbox-item drug-checkbox-item">
                         <input
                           type="checkbox"
@@ -1040,19 +1140,34 @@ const PatientDetail = () => {
               </div>
 
               <div className="history-actions">
-                <button className="save-history-button">
+                <button 
+                  className="save-history-button"
+                  onClick={handleSaveHistory}
+                >
                   Save Changes
                 </button>
-                <button className="reset-history-button" onClick={() => setCheckedItems({
-                  giSx: {},
-                  cvd: {},
-                  renalGu: {},
-                  others: {},
-                  hypo: {},
-                  weight: {},
-                  bone: {},
-                  adrs: {}
-                })}>
+                <button className="reset-history-button" onClick={() => {
+                  // Reset tất cả checkbox về false
+                  const resetCheckedItems: {[key: string]: {[key: string]: boolean}} = {
+                    cvd: {},
+                    renalGu: {},
+                    others: {},
+                    hypo: {},
+                    weight: {},
+                    bone: {},
+                    giSx: {},
+                    chf: {},
+                    adrs: {}
+                  };
+                  
+                  Object.keys(defaultMedicalHistory).forEach(category => {
+                    defaultMedicalHistory[category].forEach((item: string) => {
+                      resetCheckedItems[category][item] = false;
+                    });
+                  });
+                  
+                  setCheckedItems(resetCheckedItems);
+                }}>
                   Reset Selection
                 </button>
               </div>

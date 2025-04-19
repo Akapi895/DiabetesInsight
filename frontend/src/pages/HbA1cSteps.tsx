@@ -840,12 +840,36 @@ const HbA1cSteps = () => {
   return (
     <div className="hba1c-steps-container">
       <header className="hba1c-header">
-        <button 
-          className="back-button"
-          onClick={() => navigate(`/patients/${id}`)}
-        >
-          Back to Patient
-        </button>
+      <button 
+        className="back-button"
+        onClick={() => {
+          const storedData = sessionStorage.getItem('diabetesInsight_patientFactors');
+          
+          if (storedData) {
+            try {
+              const patientData = JSON.parse(storedData);
+              
+              const cleanedData = {
+                id: patientData.id,
+                name: patientData.name,
+                age: patientData.age,
+                diabetesType: patientData.diabetesType,
+                hba1cLevel: patientData.hba1cLevel,
+                timestamp: new Date().getTime()
+              };
+              
+              sessionStorage.setItem('diabetesInsight_patientFactors', JSON.stringify(cleanedData));
+              console.log('Cleaned patient data in session storage:', cleanedData);
+            } catch (error) {
+              console.error('Error cleaning patient data in session storage:', error);
+            }
+          }
+          
+          navigate(`/patients/${id}`);
+        }}
+      >
+        Back to Patient
+      </button>
         <h1>HbA1c Target Calculation</h1>
       </header>
       
