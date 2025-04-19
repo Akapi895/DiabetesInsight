@@ -91,6 +91,12 @@ const PatientDetail = () => {
     }));
   };
 
+  const handleTreatmentGuidelinesClick = () => {
+    if (id) {
+      navigate(`/topsis-analysis/${id}`);
+    }
+  };
+
   const defaultMedicalHistory: {
     cvd: string[];
     renalGu: string[];
@@ -1177,7 +1183,7 @@ const PatientDetail = () => {
       </div>
 
       <div className="action-buttons">
-        <button className="treatment-button" onClick={() => navigate(`/treatment/${patient.id}`)}>
+        <button className="treatment-button" onClick={handleTreatmentGuidelinesClick}>
           Treatment Guidelines
         </button>
         <button className="report-button" onClick={() => window.print()}>
