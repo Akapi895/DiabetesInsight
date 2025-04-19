@@ -282,21 +282,34 @@ const PatientDetail = () => {
         // Thêm mock data cho history vì API không có
         const patientWithHistory = {
           ...data,
-          // Mock data cho lịch sử bệnh
-          cvd: ['Coronary Artery Disease', 'Ischemic Heart Disease', 'Stroke'],
-          renalGu: ['CKD Stage 3', 'Nephropathy', 'UTI'],
-          others: ['Depression', 'Anxiety', 'Sleep Apnea'],
-          hypo: ['Severe Hypoglycemia', 'Nocturnal Hypoglycemia'],
-          weight: ['Obesity', 'Weight Loss Resistance'],
-          bone: ['Osteoporosis', 'Fracture History'],
-          giSx: ['GERD', 'Chronic Constipation'],
-          chf: ['Heart Failure Class II', 'Edema'],
-          adrs: ['Metformin', 'Sulfonylureas', 'SGLT2 inhibitors']
+          cvd: [
+            'Blunt myocardial ischemic preconditioning', 'Increase Heart rate', 
+            'Icnrease LDL-C', 'Ml', 'Volume depletion/hypotension/dizziness',
+            'Contraindications hyproxia', 'Contraindications dehydration'
+          ],
+          renalGu: [
+            'Increase Cr: transient', 'Lactic acidosis risk:rare',
+            'Contraindications CKD', 'Contraindications acidosis',
+            'Genitourinary infections', 'Polyuria'
+          ],
+          others: [
+            'Low durability', 'Angioedema/urticaria', 'Injectable',
+            'C-cell hyperplasia/medullary thypoid tumors', 'Mitogenic effects',
+            'Training requirements',  'Patient reluctance about injection'
+          ],
+          hypo: ['Hypoglycemia'],
+          weight: ['Weight gain'],
+          bone: ['Bone fractures'],
+          giSx: ['Gastrointestinal', 'Acute pancreatitis', 'Vitamin B12 deficiency'],
+          chf: ['Edema', 'Heart failure', 'Heart failure hospitalizations'],
+          adrs: [
+            'Biguanides (MET)', 'Sulfonylureas (SU)', 
+            'TZDs', 'DPP-4', 'SGLT2', 'GLP-1', 'Insulins'
+          ]
         };
         
         setPatient(patientWithHistory);
         
-        // Cập nhật patientFactors từ dữ liệu mới
         if (data.diabetes) {
           setPatientFactors({
             hypoglycemiaRisk: data.diabetes.hypoglycemiaRisk,
@@ -880,54 +893,6 @@ const PatientDetail = () => {
             <div className="patient-history-section">
               <div className="history-grid">
                 <div className="history-item">
-                  <h3>CVD</h3>
-                  <div className="checkbox-list">
-                    {patient.cvd.map((item, index) => (
-                      <div key={index} className="checkbox-item">
-                        <input
-                          type="checkbox"
-                          id={`cvd-${index}`}
-                          checked={!!checkedItems.cvd[item]}
-                          onChange={() => handleCheckboxChange('cvd', item)}
-                        />
-                        <label htmlFor={`cvd-${index}`}>{item}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="history-item">
-                  <h3>Renal/GU</h3>
-                  <div className="checkbox-list">
-                    {patient.renalGu.map((item, index) => (
-                      <div key={index} className="checkbox-item">
-                        <input
-                          type="checkbox"
-                          id={`renalGu-${index}`}
-                          checked={!!checkedItems.renalGu[item]}
-                          onChange={() => handleCheckboxChange('renalGu', item)}
-                        />
-                        <label htmlFor={`renalGu-${index}`}>{item}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="history-item">
-                  <h3>Others</h3>
-                  <div className="checkbox-list">
-                    {patient.others.map((item, index) => (
-                      <div key={index} className="checkbox-item">
-                        <input
-                          type="checkbox"
-                          id={`others-${index}`}
-                          checked={!!checkedItems.others[item]}
-                          onChange={() => handleCheckboxChange('others', item)}
-                        />
-                        <label htmlFor={`others-${index}`}>{item}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="history-item">
                   <h3>Hypo</h3>
                   <div className="checkbox-list">
                     {patient.hypo.map((item, index) => (
@@ -971,6 +936,54 @@ const PatientDetail = () => {
                           onChange={() => handleCheckboxChange('bone', item)}
                         />
                         <label htmlFor={`bone-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>CVD</h3>
+                  <div className="checkbox-list">
+                    {patient.cvd.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`cvd-${index}`}
+                          checked={!!checkedItems.cvd[item]}
+                          onChange={() => handleCheckboxChange('cvd', item)}
+                        />
+                        <label htmlFor={`cvd-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Renal/GU</h3>
+                  <div className="checkbox-list">
+                    {patient.renalGu.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`renalGu-${index}`}
+                          checked={!!checkedItems.renalGu[item]}
+                          onChange={() => handleCheckboxChange('renalGu', item)}
+                        />
+                        <label htmlFor={`renalGu-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Others</h3>
+                  <div className="checkbox-list">
+                    {patient.others.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`others-${index}`}
+                          checked={!!checkedItems.others[item]}
+                          onChange={() => handleCheckboxChange('others', item)}
+                        />
+                        <label htmlFor={`others-${index}`}>{item}</label>
                       </div>
                     ))}
                   </div>
