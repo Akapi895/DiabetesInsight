@@ -57,7 +57,7 @@ const PatientDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('basic');
-  const [hba1cTarget, setHba1cTarget] = useState<string | null>(null);
+  const [hba1cTarget] = useState<string | null>(null);
 
   const [patientFactors, setPatientFactors] = useState({
     hypoglycemiaRisk: 0,
