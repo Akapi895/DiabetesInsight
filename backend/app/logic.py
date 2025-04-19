@@ -4,91 +4,58 @@ import os
 import uuid
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+from app.schemas import PatientData, t2dmData
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), "../diabetes.db")
-AVATAR_DIR = os.path.join(os.path.dirname(__file__), "../static/avatars")
 
-# Đảm bảo thư mục avatar tồn tại
-os.makedirs(AVATAR_DIR, exist_ok=True)
-
-# def handle_sparql_query(sparql_query: str):
-#     return {"result": query_rdf(sparql_query)}
-
-def add_patient_logic(data: dict, avatar_data: Optional[dict] = None) -> dict:
-    """
-    Thêm bệnh nhân mới vào database, cả thông tin cá nhân và dữ liệu diabetes
-    
-    Args:
-        data: Dictionary chứa thông tin cá nhân của bệnh nhân
-        avatar_data: Dictionary chứa dữ liệu avatar (nếu có)
-        
-    Returns:
-        Dict chứa thông báo kết quả và ID của bệnh nhân mới
-    """
-    try:
-        # Tạo ID cho bệnh nhân mới
-        patient_id = str(uuid.uuid4())
-        
-        # Kết nối tới database
+def add_patient_logic(data: PatientData) -> dict:
+    try:        
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
-        
-        # Lưu avatar nếu có
-        avatar_filename = None
-        if avatar_data:
-            # Tạo tên file dựa trên tên ban đầu + patient_id để đảm bảo không trùng
-            # Giả sử avatar_data['filename'] chứa tên file ban đầu
-            original_filename = avatar_data.get('filename', '')
-            if original_filename:
-                # Lấy phần mở rộng của file
-                _, extension = os.path.splitext(original_filename)
-                avatar_filename = f"{patient_id}{extension}"
-                
-                # Đường dẫn đầy đủ để lưu file
-                avatar_path = os.path.join(AVATAR_DIR, avatar_filename)
-                
-                # Lưu file
-                with open(avatar_path, 'wb') as f:
-                    f.write(avatar_data['content'])
-        
-        # Chuẩn bị thông tin bệnh nhân cho bảng personal
+
         cursor.execute(
             """
             INSERT INTO personal (
-                patient_id, name, age, gender, phone, email, address, avatar_path
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                name, age, gender, phone, email, address
+            ) VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
-                patient_id,
-                data['name'],
-                data['age'],
-                data['gender'],
-                data.get('phone', None),
-                data.get('email', None),
-                data.get('address', None),
-                avatar_filename
+                data.name,       
+                data.age,        
+                data.gender,     
+                data.phoneNumber,
+                data.email,      
+                data.address 
             )
         )
+        conn.commit()
+
+        cursor.execute("SELECT last_insert_rowid()")
+        patient_id = cursor.fetchone()[0]
+
         
-        # Thêm dữ liệu mặc định cho bảng diabete
         cursor.execute(
             """
             INSERT INTO diabete (
                 patient_id, type_of_diabetes, disease_duration, hba1c, hypoglycemia,
-                created_date
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                life_expectancy, important_comorbidities, vascular_complications,
+                attitude, resources
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 patient_id,
-                "Type 2",  # Giá trị mặc định
-                0,         # Thời gian mắc bệnh mặc định (0 năm)
-                7.0,       # HbA1c mặc định
-                "Low",     # Nguy cơ hạ đường huyết mặc định
-                datetime.now().strftime("%Y-%m-%d")  # Ngày tạo
+                0, 
+                0,       
+                7.0,  
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
             )
         )
         
-        # Commit giao dịch và đóng kết nối
         conn.commit()
         conn.close()
         
@@ -113,14 +80,6 @@ def add_patient_logic(data: dict, avatar_data: Optional[dict] = None) -> dict:
         print(f"Error adding patient: {e}")
         raise Exception(f"Error adding patient: {e}")
 
-def get_patient_logic(patient_id: str):
-    # Giả định trả về thông tin bệnh nhân
-    return {
-        "id": patient_id,
-        "name": "John Doe",
-        "status": "Loại 2"
-    }
-
 def get_all_patients_logic() -> List[Dict[str, Any]]:
     try:
         # Kết nối đến database
@@ -133,7 +92,6 @@ def get_all_patients_logic() -> List[Dict[str, Any]]:
             p.patient_id, 
             p.name, 
             p.age, 
-            p.avatar_path,
             d.type_of_diabetes, 
             d.disease_duration, 
             d.hba1c, 
@@ -152,15 +110,11 @@ def get_all_patients_logic() -> List[Dict[str, Any]]:
         # Chuyển đổi kết quả thành danh sách các dictionary
         patients = []
         for row in rows:
-            avatar_url = None
-            if row["avatar_path"]:
-                avatar_url = f"/static/avatars/{row['avatar_path']}"
                 
             patient = {
                 "id": row["patient_id"],
                 "name": row["name"],
                 "age": row["age"],
-                "avatar": avatar_url,
                 "diabetesType": row["type_of_diabetes"],
                 "diseaseDuration": row["disease_duration"],
                 "hba1cLevel": row["hba1c"],
@@ -169,7 +123,8 @@ def get_all_patients_logic() -> List[Dict[str, Any]]:
             patients.append(patient)
         
         conn.close()
-        return patients
+        sorted_patients = sorted(patients, key=lambda x: x["id"])
+        return sorted_patients
         
     except sqlite3.Error as e:
         # Log lỗi
@@ -180,3 +135,298 @@ def get_all_patients_logic() -> List[Dict[str, Any]]:
         # Log lỗi khác
         print(f"Error fetching patients: {e}")
         raise Exception(f"Error fetching patients: {e}")
+        
+def get_patient_logic(patient_id: int):
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # 1. Lấy thông tin cá nhân từ bảng personal
+        cursor.execute(
+            """
+            SELECT 
+                name, age, gender, phone, email, address
+            FROM 
+                personal 
+            WHERE 
+                patient_id = ?
+            """, 
+            (patient_id,)
+        )
+        
+        person_row = cursor.fetchone()
+        
+        if not person_row:
+            conn.close()
+            return None  # Bệnh nhân không tồn tại
+            
+        # Chuyển row thành dict
+        personal_info = {
+            "name": person_row["name"],
+            "age": person_row["age"],
+            "gender": person_row["gender"],
+            "phoneNumber": person_row["phone"],
+            "email": person_row["email"],
+            "address": person_row["address"]
+        }
+        
+        # 2. Lấy thông tin bệnh tiểu đường từ bảng diabete
+        cursor.execute(
+            """
+            SELECT 
+                type_of_diabetes, disease_duration, hba1c, hypoglycemia,
+                life_expectancy, important_comorbidities, vascular_complications,
+                attitude, resources
+            FROM 
+                diabete 
+            WHERE 
+                patient_id = ?
+            """, 
+            (patient_id,)
+        )
+        
+        diabetes_row = cursor.fetchone()
+        
+        if diabetes_row:
+            diabetes_info = {
+                "diabetesType": diabetes_row["type_of_diabetes"],
+                "diseaseDuration": diabetes_row["disease_duration"],
+                "hba1cLevel": diabetes_row["hba1c"],
+                "hypoglycemiaRisk": diabetes_row["hypoglycemia"],
+                "lifeExpectancy": diabetes_row["life_expectancy"],
+                "importantComorbidities": diabetes_row["important_comorbidities"],
+                "vascularComplications": diabetes_row["vascular_complications"],
+                "patientAttitude": diabetes_row["attitude"],
+                "resourcesSupport": diabetes_row["resources"]
+            }
+        else:
+            # Nếu không có thông tin bệnh tiểu đường, tạo dict trống
+            diabetes_info = {
+                "diabetesType": None,
+                "diseaseDuration": None,
+                "hba1cLevel": None,
+                "hypoglycemiaRisk": None,
+                "lifeExpectancy": None,
+                "importantComorbidities": None,
+                "vascularComplications": None,
+                "patientAttitude": None,
+                "resourcesSupport": None
+            }
+        
+        # 3. Lấy tất cả phản ứng phụ từ bảng adverse_reaction
+        cursor.execute(
+            """
+            SELECT 
+                drug
+            FROM 
+                adverse_reaction 
+            WHERE 
+                patient_id = ?
+            """, 
+            (patient_id,)
+        )
+        
+        adverse_reactions = []
+        for row in cursor.fetchall():
+            reaction = {
+                "drug": row["drug"]
+            }
+            adverse_reactions.append(reaction)
+        
+        # 4. Lấy tiền sử bệnh từ bảng medical_history
+        cursor.execute(
+            """
+            SELECT 
+                category, condition
+            FROM 
+                medical_history 
+            WHERE 
+                patient_id = ?
+            ORDER BY 
+                category
+            """, 
+            (patient_id,)
+        )
+        
+        medical_history = []
+        for row in cursor.fetchall():
+            history = {
+                "category": row["category"],
+                "condition": row["condition"]
+            }
+            medical_history.append(history)
+        
+        # Đóng kết nối database
+        conn.close()
+        
+        # Kết hợp tất cả thông tin vào một dict
+        patient_data = {
+            "id": patient_id,
+            "personal": personal_info,
+            "diabetes": diabetes_info,
+            "adverseReactions": adverse_reactions,
+            "medicalHistory": medical_history
+        }
+        
+        return patient_data
+        
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        raise Exception(f"Database error: {e}")
+        
+    except Exception as e:
+        print(f"Error fetching patient data: {e}")
+        raise Exception(f"Error fetching patient data: {e}")
+    
+def update_t2dm_logic(data: t2dmData) -> dict:
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        hypoglycemia_map = {
+            "Low": 0, "Low-Medium": 1, "Medium": 2, "Medium-High": 3, "High": 4
+        }
+        
+        life_expectancy_map = {
+            "Very Long": 0, "Long": 1, "Moderate": 2, "Limited": 3, "Short": 4
+        }
+        
+        comorbidities_map = {
+            "Absent": 0, "Minimal": 1, "Mild": 2, "Moderate": 3, "Severe": 4
+        }
+        
+        vascular_complications_map = {
+            "None": 0, "Minimal": 1, "Mild": 2, "Moderate": 3, "Severe": 4
+        }
+        
+        patient_attitude_map = {
+            "Highly motivated": 0, "Very motivated": 1, "Moderately motivated": 2, 
+            "Somewhat motivated": 3, "Less motivated": 4
+        }
+        
+        resources_support_map = {
+            "Readily available": 0, "Available": 1, "Moderate": 2, "Restricted": 3, "Limited": 4
+        }
+        
+        # Xóa thông tin hiện tại (nếu có)
+        cursor.execute(
+            "DELETE FROM diabete WHERE patient_id = ?",
+            (data.id,)
+        )
+        
+        # Chuyển diabetes type từ chuỗi sang số
+        diabetes_type = 1 if data.diabetesType == "Type 1" else 2
+        
+        # Thêm thông tin mới
+        cursor.execute(
+            """
+            INSERT INTO diabete (
+                patient_id, type_of_diabetes, disease_duration, hba1c, hypoglycemia,
+                life_expectancy, important_comorbidities, vascular_complications,
+                attitude, resources
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                data.id,
+                diabetes_type,
+                data.diseaseDuration,
+                data.hba1cLevel,
+                hypoglycemia_map.get(data.hypoglycemiaRisk, 0),
+                life_expectancy_map.get(data.lifeExpectancy, 2),
+                comorbidities_map.get(data.importantComorbidities, 0),
+                vascular_complications_map.get(data.establishedVascularComplications, 0),
+                patient_attitude_map.get(data.patientAttitude, 2),
+                resources_support_map.get(data.resourcesSupport, 2)
+            )
+        )
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            "message": "T2DM data updated successfully",
+            "patient_id": data.id
+        }
+        
+    except sqlite3.Error as e:
+        if conn:
+            conn.rollback()
+            conn.close()
+        print(f"Database error: {e}")
+        raise Exception(f"Database error: {e}")
+        
+    except Exception as e:
+        if conn:
+            conn.rollback()
+            conn.close()
+        print(f"Error updating T2DM data: {e}")
+        raise Exception(f"Error updating T2DM data: {e}")
+
+def update_hba1c_logic(patient_id: int, hba1c_level: float) -> dict:
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute(
+            "SELECT COUNT(*) FROM personal WHERE patient_id = ?",
+            (patient_id,)
+        )
+        
+        if cursor.fetchone()[0] == 0:
+            conn.close()
+            raise Exception(f"Patient with ID {patient_id} not found")
+        
+        cursor.execute(
+            """
+            UPDATE diabete 
+            SET hba1c = ? 
+            WHERE patient_id = ?
+            """,
+            (hba1c_level, patient_id)
+        )
+        
+        if cursor.rowcount == 0:
+            cursor.execute(
+                """
+                INSERT INTO diabete (
+                    patient_id, type_of_diabetes, disease_duration, hba1c, hypoglycemia,
+                    life_expectancy, important_comorbidities, vascular_complications,
+                    attitude, resources
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    patient_id,
+                    2,  # Type 2 mặc định
+                    0,  # Disease duration mặc định
+                    hba1c_level,  # HbA1c mới
+                    0,  # Hypoglycemia risk mặc định
+                    0,  # Life expectancy mặc định
+                    0,  # Important comorbidities mặc định
+                    0,  # Vascular complications mặc định
+                    0,  # Patient attitude mặc định
+                    0   # Resources mặc định
+                )
+            )
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            "message": "HbA1c updated successfully",
+            "patient_id": patient_id,
+            "hba1c_level": hba1c_level
+        }
+        
+    except sqlite3.Error as e:
+        if conn:
+            conn.rollback()
+            conn.close()
+        print(f"Database error: {e}")
+        raise Exception(f"Database error: {e}")
+        
+    except Exception as e:
+        if conn:
+            conn.close()
+        print(f"Error updating HbA1c: {e}")
+        raise Exception(f"Error updating HbA1c: {e}")

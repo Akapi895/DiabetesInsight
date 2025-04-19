@@ -9,8 +9,7 @@ interface Patient {
   diabetesType: string;
   diseaseDuration: number;
   hba1cLevel: number;
-  hypoglycemiaRisk: string;
-  avatar?: string;
+  hypoglycemiaRisk: number;
 }
 
 const PatientList = () => {
@@ -44,63 +43,6 @@ const PatientList = () => {
     fetchPatients();
   }, []);
 
-  // For demo purposes, using mock data if API is not ready
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && !patients.length && loading) {
-      // Mock data for development
-      const mockPatients: Patient[] = [
-        {
-          id: 'PT001',
-          name: 'John Smith',
-          age: 56,
-          diabetesType: 'Type 2',
-          diseaseDuration: 8,
-          hba1cLevel: 7.2,
-          hypoglycemiaRisk: 'Low'
-        },
-        {
-          id: 'PT002',
-          name: 'Emma Johnson',
-          age: 42,
-          diabetesType: 'Type 1',
-          diseaseDuration: 15,
-          hba1cLevel: 6.8,
-          hypoglycemiaRisk: 'Medium'
-        },
-        {
-          id: 'PT003',
-          name: 'Michael Chen',
-          age: 67,
-          diabetesType: 'Type 2',
-          diseaseDuration: 12,
-          hba1cLevel: 8.1,
-          hypoglycemiaRisk: 'High'
-        },
-        {
-          id: 'PT004',
-          name: 'Sarah Williams',
-          age: 35,
-          diabetesType: 'Type 1',
-          diseaseDuration: 20,
-          hba1cLevel: 6.5,
-          hypoglycemiaRisk: 'Low'
-        },
-        {
-          id: 'PT005',
-          name: 'Robert Garcia',
-          age: 59,
-          diabetesType: 'Type 2',
-          diseaseDuration: 5,
-          hba1cLevel: 7.8,
-          hypoglycemiaRisk: 'Medium'
-        }
-      ];
-      
-      setPatients(mockPatients);
-      setLoading(false);
-    }
-  }, [patients.length, loading]);
-
   const filteredPatients = patients.filter(patient => 
     patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     patient.id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -115,16 +57,14 @@ const PatientList = () => {
     navigate('/add-patient');
   };
 
-  const getRiskClass = (risk: string): string => {
-    switch (risk.toLowerCase()) {
-      case 'low':
-        return 'risk-low';
-      case 'medium':
-        return 'risk-medium';
-      case 'high':
-        return 'risk-high';
-      default:
-        return '';
+  const getRiskClass = (risk: number): string => {
+    switch (risk) {
+      case 0: return 'Low';
+      case 1: return 'Low-Medium';
+      case 2: return 'Medium';
+      case 3: return 'Medium-High';
+      case 4: return 'High';
+      default: return 'Unknown';
     }
   };
 
@@ -180,13 +120,6 @@ const PatientList = () => {
                 <tr key={patient.id} onClick={() => handleViewPatient(patient.id)}>
                   <td>{patient.id}</td>
                   <td className="patient-name">
-                    {patient.avatar && (
-                      <img 
-                        src={patient.avatar} 
-                        alt={`${patient.name}'s avatar`} 
-                        className="patient-avatar" 
-                      />
-                    )}
                     {patient.name}
                   </td>
                   <td>{patient.age}</td>
@@ -195,7 +128,7 @@ const PatientList = () => {
                   <td>{patient.hba1cLevel}%</td>
                   <td>
                     <span className={`risk-badge ${getRiskClass(patient.hypoglycemiaRisk)}`}>
-                      {patient.hypoglycemiaRisk}
+                      {getRiskClass(patient.hypoglycemiaRisk)}
                     </span>
                   </td>
                   <td>

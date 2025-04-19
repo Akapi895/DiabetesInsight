@@ -1,21 +1,14 @@
 from fastapi import APIRouter, Query, HTTPException, Form, UploadFile, File
 from app.logic import (
     get_all_patients_logic, 
-    add_patient_logic 
+    add_patient_logic,
+    get_patient_logic,
+    update_t2dm_logic,
+    update_hba1c_logic
 )
-from pydantic import BaseModel
-from typing import Optional
+from app.schemas import PatientData, t2dmData, HbA1cUpdateData
 
 router = APIRouter()
-
-# Model cho dữ liệu bệnh nhân
-class PatientData(BaseModel):
-    name: str
-    age: int
-    gender: str
-    phoneNumber: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
 
 @router.get("/")
 def root():
@@ -28,44 +21,39 @@ def get_all_patients():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/patients/add")
-async def add_patient(
-    name: str = Form(...),
-    age: str = Form(...),
-    gender: str = Form(...),
-    phoneNumber: Optional[str] = Form(None),
-    email: Optional[str] = Form(None),
-    address: Optional[str] = Form(None),
-    avatar: Optional[UploadFile] = File(None)
-):
+@router.post("/patients/add") # Done
+async def add_patient(patient_data: PatientData):
     try:
-        # Chuyển đổi age thành kiểu số
-        age_int = int(age)
-        
-        # Chuẩn bị dữ liệu bệnh nhân
-        patient_data = {
-            "name": name,
-            "age": age_int,
-            "gender": gender,
-            "phone": phoneNumber,
-            "email": email,
-            "address": address
-        }
-        
-        # Xử lý avatar nếu được tải lên
-        avatar_data = None
-        if avatar:
-            avatar_content = await avatar.read()
-            avatar_data = {
-                "filename": avatar.filename,
-                "content": avatar_content
-            }
-            
-        # Gọi logic để thêm bệnh nhân
-        result = add_patient_logic(patient_data, avatar_data)
+        result = add_patient_logic(patient_data)
         return result
         
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid age value")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/patients/{patient_id}") # Done
+def get_patient(patient_id: int):
+    try:
+        patient = get_patient_logic(patient_id)
+        if not patient:
+            raise HTTPException(status_code=404, detail="Patient not found")
+        return patient
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/patients/update/t2dm")
+def update_t2dm(patient_data: t2dmData):
+    try:
+        result = update_t2dm_logic(patient_data)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.put("/patients/update/hba1c")
+def update_hba1c(update_data: HbA1cUpdateData):
+    try:
+        result = update_hba1c_logic(update_data.patient_id, update_data.hba1c_level)
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -4,43 +4,36 @@ import '../styles/AddPatient.css';
 
 interface PatientData {
   name: string;
-  age: string;
+  age: number;
   gender: string;
   phoneNumber: string;
   email: string;
   address: string;
-  avatar: File | null;
-  avatarPreview: string;
 }
 
 const AddPatient = () => {
   const navigate = useNavigate();
   const [patientData, setPatientData] = useState<PatientData>({
     name: '',
-    age: '',
+    age: 0,
     gender: '',
     phoneNumber: '',
     email: '',
-    address: '',
-    avatar: null,
-    avatarPreview: '',
+    address: ''
   });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setPatientData({
-      ...patientData,
-      [name]: value,
-    });
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+    
+    if (name === 'age') {
       setPatientData({
         ...patientData,
-        avatar: file,
-        avatarPreview: URL.createObjectURL(file),
+        [name]: value === '' ? 0 : parseInt(value, 10)
+      });
+    } else {
+      setPatientData({
+        ...patientData,
+        [name]: value
       });
     }
   };
@@ -49,21 +42,14 @@ const AddPatient = () => {
     e.preventDefault();
     
     try {
-      // Create form data to handle file upload
-      const formData = new FormData();
-      Object.entries(patientData).forEach(([key, value]) => {
-        if (key === 'avatar' && value) {
-          formData.append(key, value);
-        } else if (key !== 'avatarPreview') {
-          formData.append(key, value as string);
-        }
-      });
-
       const response = await fetch('http://127.0.0.1:8000/api/patients/add', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(patientData)
       });
-
+  
       if (response.ok) {
         const result = await response.json();
         alert(`Patient added successfully! ID: ${result.patient_id}`);
@@ -77,34 +63,11 @@ const AddPatient = () => {
       alert('An error occurred while adding the patient.');
     }
   };
-
+  
   return (
     <div className="add-patient-container">
       <h1>Add New Patient</h1>
       <form onSubmit={handleSubmit} className="patient-form single-column">
-        <div className="form-group avatar-section">
-          <label htmlFor="avatar">Patient Avatar</label>
-          <div className="avatar-upload">
-            {patientData.avatarPreview && (
-              <img
-                src={patientData.avatarPreview}
-                alt="Avatar preview"
-                className="avatar-preview"
-              />
-            )}
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            <label htmlFor="avatar" className="upload-button">
-              Choose Image
-            </label>
-          </div>
-        </div>
-
         <div className="form-group">
           <label htmlFor="name">Full Name</label>
           <input

@@ -29,7 +29,6 @@ interface Patient {
   resourcesSupport: string;
 }
 
-// Định nghĩa trạng thái hiển thị tab
 type ActiveStep = 'summary' | 'fuzzification' | 'rules' | 'aggregation' | 'defuzzification';
 
 const HbA1cSteps = () => {
@@ -48,38 +47,40 @@ const HbA1cSteps = () => {
     try {
       setUpdatingHbA1c(true);
       
-      // Gọi API để cập nhật HbA1c target mới cho bệnh nhân
-      // Nếu đang trong môi trường development, giả lập việc cập nhật thành công
-      if (process.env.NODE_ENV === 'development') {
-        // Giả lập delay của API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log(`Updated HbA1c target for patient ${patient.id} to ${calculationResult.hba1cTarget}%`);
-      } else {
-        // Gọi API thật để cập nhật
-        const response = await fetch(`http://localhost:5000/api/patients/${patient.id}/update-hba1c-target`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            hba1cTarget: calculationResult.hba1cTarget 
-          }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to update HbA1c target');
-        }
+      const response = await fetch('http://127.0.0.1:8000/api/patients/update/hba1c', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patient_id: parseInt(patient.id),
+          hba1c_level: calculationResult.hba1cTarget
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
       }
       
-      // Hiển thị thông báo thành công (nếu có UI thông báo)
-      // Có thể sử dụng toast notification hoặc alert
+      const result = await response.json();
+      console.log('HbA1c target updated successfully:', result);
+      
+      // Hiển thị thông báo thành công
       alert(`Đã cập nhật mục tiêu HbA1c thành ${calculationResult.hba1cTarget}% cho bệnh nhân ${patient.name}`);
       
-      // Chuyển hướng về trang bệnh nhân
+      // Cập nhật sessionStorage với giá trị HbA1c mới
+      const storedData = sessionStorage.getItem('diabetesInsight_patientFactors');
+      if (storedData) {
+        const patientData = JSON.parse(storedData);
+        patientData.hba1cLevel = calculationResult.hba1cTarget;
+        sessionStorage.setItem('diabetesInsight_patientFactors', JSON.stringify(patientData));
+      }
+      
+      // Chuyển hướng về trang chi tiết bệnh nhân
       navigate(`/patients/${patient.id}`);
       
     } catch (error) {
-      console.error('Error updating HbA1c target:', error);
+      // console.error('Error updating HbA1c target:', error);
       alert('Có lỗi xảy ra khi cập nhật mục tiêu HbA1c. Vui lòng thử lại sau.');
     } finally {
       setUpdatingHbA1c(false);
@@ -97,9 +98,47 @@ const HbA1cSteps = () => {
   });
   const aggregationChartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstances = useRef<{ [key: string]: Chart | null }>({});
+
+  const updatePatientT2dmData = async (patientData: Patient) => {
+    try {
+      console.log('Updating T2DM data for patient:', patientData.id);
+      
+      const response = await fetch('http://127.0.0.1:8000/api/patients/update/t2dm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: parseInt(patientData.id),  
+          name: patientData.name,
+          age: patientData.age,
+          diabetesType: patientData.diabetesType,
+          diseaseDuration: patientData.diseaseDuration,
+          hba1cLevel: patientData.hba1cLevel,
+          hypoglycemiaRisk: patientData.hypoglycemiaRisk,
+          lifeExpectancy: patientData.lifeExpectancy,
+          importantComorbidities: patientData.importantComorbidities,
+          establishedVascularComplications: patientData.establishedVascularComplications,
+          patientAttitude: patientData.patientAttitude,
+          resourcesSupport: patientData.resourcesSupport,
+          timestamp: new Date().getTime()
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('T2DM data updated successfully:', result);
+      
+    } catch (error) {
+      setError('Failed to update T2DM data. Please try again later.');
+      console.error('Failed to update T2DM data:', error);
+    }
+  };
   
   useEffect(() => {
-    // Đầu tiên, thử lấy dữ liệu từ session storage
     try {
       setLoading(true);
       const storedData = sessionStorage.getItem('diabetesInsight_patientFactors');
@@ -107,63 +146,32 @@ const HbA1cSteps = () => {
       if (storedData) {
         const patientData = JSON.parse(storedData);
         
-        if (patientData.id === id) {
-          console.log('Successfully loaded patient data from session storage:', patientData);
+        if (patientData.id == id) { 
           setPatient(patientData);
           setLoading(false);
-          return; // Thoát sớm vì đã có dữ liệu
+
+          updatePatientT2dmData(patientData);
+          return; 
         } else {
-          console.log('Stored patient ID does not match current ID. Fetching new data...');
+          console.log('Stored patient ID does not match current ID.');
         }
       } else {
-        console.log('No patient data found in session storage. Fetching data...');
+        console.log('No patient data found in session storage.');
       }
+      
+      setLoading(false);
+      alert('Không thể tải dữ liệu bệnh nhân để tính toán HbA1c. Vui lòng quay lại trang chi tiết bệnh nhân và thử lại.');
+      
+      navigate(`/patients/${id}`);
+      
     } catch (error) {
       console.error('Error retrieving patient data from session storage:', error);
-    }
-
-    // Nếu không lấy được dữ liệu từ session storage, dùng dữ liệu mock hoặc gọi API
-    const fetchPatient = async () => {
-      try {
-        // TODO: Replace with actual API endpoint
-        const response = await fetch(`http://localhost:5000/api/patients/${id}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch patient details');
-        }
-        
-        const data = await response.json();
-        setPatient(data);
-        setLoading(false);
-      } catch (err) {
-        setError('Error fetching patient data. Please try again later.');
-        setLoading(false);
-        console.error('Error fetching patient:', err);
-      }
-    };
-
-    // Fallback to mock data for development or fetch from API
-    if (process.env.NODE_ENV === 'development') {
-      const mockPatient: Patient = {
-        id: 'PT001',
-        name: 'John Smith',
-        age: 56,
-        diabetesType: 'Type 2',
-        diseaseDuration: 8,
-        hba1cLevel: 7.2,
-        hypoglycemiaRisk: 'Low',
-        lifeExpectancy: 'Long',
-        importantComorbidities: 'Mild',
-        establishedVascularComplications: 'None',
-        patientAttitude: 'Highly motivated',
-        resourcesSupport: 'Available',
-      };
-      setPatient(mockPatient);
       setLoading(false);
-    } else {
-      fetchPatient();
+      alert('Đã xảy ra lỗi khi tải dữ liệu bệnh nhân. Vui lòng quay lại trang chi tiết bệnh nhân và thử lại.');
+      
+      navigate(`/patients/${id}`);
     }
-  }, [id]);
+  }, [id, navigate]);
   
   // Tính toán HbA1c target khi patient data sẵn sàng
   useEffect(() => {
@@ -185,7 +193,6 @@ const HbA1cSteps = () => {
   // Vẽ biểu đồ mờ hóa khi thay đổi tab hoặc có dữ liệu mới
   useEffect(() => {
     if (activeStep === 'fuzzification' && calculationResult) {
-      // Dọn dẹp các biểu đồ cũ
       Object.keys(chartInstances.current).forEach(key => {
         if (chartInstances.current[key]) {
           chartInstances.current[key]!.destroy();
