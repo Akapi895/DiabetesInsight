@@ -39,6 +39,15 @@ interface Patient {
   diabetes: DiabetesInfo;
   adverseReactions: AdverseReaction[];
   medicalHistory: MedicalHistoryItem[];
+  cvd: string[];
+  renalGu: string[];
+  others: string[];
+  hypo: string[];
+  weight: string[];
+  bone: string[];
+  giSx: string[];
+  chf: string[];
+  adrs: string[];
 }
 
 const PatientDetail = () => {
@@ -114,6 +123,8 @@ const PatientDetail = () => {
       case 'resourcesSupport':
         updatedPatient.diabetes.resourcesSupport = value;
         break;
+      case 'hba1cTarget':
+        updatedPatient.diabetes.hba1cLevel = value;
     }
     
     setPatient(updatedPatient);
@@ -253,6 +264,62 @@ const PatientDetail = () => {
       setCheckedItems(initialCheckedItems);
     }
   }, [patient]);
+
+  useEffect(() => {
+    const fetchPatient = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        const response = await fetch(`http://127.0.0.1:8000/api/patients/${id}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch patient details');
+        }
+        
+        const data = await response.json();
+        
+        // Thêm mock data cho history vì API không có
+        const patientWithHistory = {
+          ...data,
+          // Mock data cho lịch sử bệnh
+          cvd: ['Coronary Artery Disease', 'Ischemic Heart Disease', 'Stroke'],
+          renalGu: ['CKD Stage 3', 'Nephropathy', 'UTI'],
+          others: ['Depression', 'Anxiety', 'Sleep Apnea'],
+          hypo: ['Severe Hypoglycemia', 'Nocturnal Hypoglycemia'],
+          weight: ['Obesity', 'Weight Loss Resistance'],
+          bone: ['Osteoporosis', 'Fracture History'],
+          giSx: ['GERD', 'Chronic Constipation'],
+          chf: ['Heart Failure Class II', 'Edema'],
+          adrs: ['Metformin', 'Sulfonylureas', 'SGLT2 inhibitors']
+        };
+        
+        setPatient(patientWithHistory);
+        
+        // Cập nhật patientFactors từ dữ liệu mới
+        if (data.diabetes) {
+          setPatientFactors({
+            hypoglycemiaRisk: data.diabetes.hypoglycemiaRisk,
+            diseaseDuration: data.diabetes.diseaseDuration,
+            lifeExpectancy: data.diabetes.lifeExpectancy,
+            comorbidities: data.diabetes.importantComorbidities,
+            vascularComplications: data.diabetes.vascularComplications,
+            patientAttitude: data.diabetes.patientAttitude,
+            resourcesSupport: data.diabetes.resourcesSupport
+          });
+        }
+        
+        setError(null);
+      } catch (err) {
+        setError('Error fetching patient details. Please try again later.');
+        console.error('Error fetching patient:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchPatient();
+  }, [id]);
 
   const getRiskClass = (risk: string): string => {
     switch (risk.toLowerCase()) {
@@ -811,45 +878,170 @@ const PatientDetail = () => {
 
           {activeTab === 'history' && (
             <div className="patient-history-section">
-              {/* Adverse Reactions */}
-              <div className="history-section">
-                <h3>Adverse Drug Reactions</h3>
-                <div className="drug-list">
-                  {patient.adverseReactions.map((reaction, index) => (
-                    <div key={index} className="drug-item">
-                      {reaction.drug}
-                    </div>
-                  ))}
-                  {patient.adverseReactions.length === 0 && (
-                    <div className="no-data-message">No adverse drug reactions recorded</div>
-                  )}
+              <div className="history-grid">
+                <div className="history-item">
+                  <h3>CVD</h3>
+                  <div className="checkbox-list">
+                    {patient.cvd.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`cvd-${index}`}
+                          checked={!!checkedItems.cvd[item]}
+                          onChange={() => handleCheckboxChange('cvd', item)}
+                        />
+                        <label htmlFor={`cvd-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Renal/GU</h3>
+                  <div className="checkbox-list">
+                    {patient.renalGu.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`renalGu-${index}`}
+                          checked={!!checkedItems.renalGu[item]}
+                          onChange={() => handleCheckboxChange('renalGu', item)}
+                        />
+                        <label htmlFor={`renalGu-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Others</h3>
+                  <div className="checkbox-list">
+                    {patient.others.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`others-${index}`}
+                          checked={!!checkedItems.others[item]}
+                          onChange={() => handleCheckboxChange('others', item)}
+                        />
+                        <label htmlFor={`others-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Hypo</h3>
+                  <div className="checkbox-list">
+                    {patient.hypo.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`hypo-${index}`}
+                          checked={!!checkedItems.hypo[item]}
+                          onChange={() => handleCheckboxChange('hypo', item)}
+                        />
+                        <label htmlFor={`hypo-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Weight</h3>
+                  <div className="checkbox-list">
+                    {patient.weight.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`weight-${index}`}
+                          checked={!!checkedItems.weight[item]}
+                          onChange={() => handleCheckboxChange('weight', item)}
+                        />
+                        <label htmlFor={`weight-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>Bone</h3>
+                  <div className="checkbox-list">
+                    {patient.bone.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`bone-${index}`}
+                          checked={!!checkedItems.bone[item]}
+                          onChange={() => handleCheckboxChange('bone', item)}
+                        />
+                        <label htmlFor={`bone-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>GI Sx</h3>
+                  <div className="checkbox-list">
+                    {patient.giSx.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`giSx-${index}`}
+                          checked={!!checkedItems.giSx[item]}
+                          onChange={() => handleCheckboxChange('giSx', item)}
+                        />
+                        <label htmlFor={`giSx-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="history-item">
+                  <h3>CHF</h3>
+                  <div className="checkbox-list">
+                    {patient.chf.map((item, index) => (
+                      <div key={index} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`chf-${index}`}
+                          checked={!!checkedItems.bone[item]}
+                          onChange={() => handleCheckboxChange('chf', item)}
+                        />
+                        <label htmlFor={`chf-${index}`}>{item}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="history-item history-item-wide">
+                  <h3>Adverse Drug Reactions (ADRs)</h3>
+                  <div className="checkbox-list drugs-list">
+                    {patient.adrs.map((item, index) => (
+                      <div key={index} className="checkbox-item drug-checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`adrs-${index}`}
+                          checked={!!checkedItems.adrs[item]}
+                          onChange={() => handleCheckboxChange('adrs', item)}
+                        />
+                        <label htmlFor={`adrs-${index}`} className="drug-label">{item}</label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-              
-              {/* Medical History */}
-              <div className="history-section">
-                <h3>Medical History</h3>
-                <div className="medical-history-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Category</th>
-                        <th>Condition</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {patient.medicalHistory.map((item, index) => (
-                        <tr key={index}>
-                          <td>{item.category}</td>
-                          <td>{item.condition}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {patient.medicalHistory.length === 0 && (
-                    <div className="no-data-message">No medical history recorded</div>
-                  )}
-                </div>
+
+              <div className="history-actions">
+                <button className="save-history-button">
+                  Save Changes
+                </button>
+                <button className="reset-history-button" onClick={() => setCheckedItems({
+                  giSx: {},
+                  cvd: {},
+                  renalGu: {},
+                  others: {},
+                  hypo: {},
+                  weight: {},
+                  bone: {},
+                  adrs: {}
+                })}>
+                  Reset Selection
+                </button>
               </div>
             </div>
           )}
