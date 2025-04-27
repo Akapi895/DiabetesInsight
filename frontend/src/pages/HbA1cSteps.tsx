@@ -215,18 +215,23 @@ const HbA1cSteps = () => {
         const datasets = fuzzifiedValues.map((fv, _) => {
           // Chọn màu dựa trên tên tập mờ
           let backgroundColor, borderColor;
-          if (fv.setName.includes('Low') || fv.setName.includes('Absent') || fv.setName.includes('None') || 
-              fv.setName.includes('Highly') || fv.setName.includes('Readily')) {
-            backgroundColor = 'rgba(46, 204, 113, 0.2)';
-            borderColor = 'rgba(46, 204, 113, 1)';
-          } else if (fv.setName.includes('Medium') || fv.setName.includes('Moderate') || 
-                    fv.setName.includes('Mild') || fv.setName.includes('Short')) {
-            backgroundColor = 'rgba(241, 196, 15, 0.2)';
-            borderColor = 'rgba(241, 196, 15, 1)';
-          } else {
-            backgroundColor = 'rgba(231, 76, 60, 0.2)';
-            borderColor = 'rgba(231, 76, 60, 1)';
-          }
+  
+  if (fv.setName.includes('Low') || 
+      fv.setName.includes('Absent') || 
+      fv.setName.includes('Long') ||
+      fv.setName.includes('Newly-Diagnosed') ||
+      fv.setName.includes('Highly_Motivated') || 
+      fv.setName.includes('Readily-Available')) {
+    backgroundColor = 'rgba(46, 204, 113, 0.2)';
+    borderColor = 'rgba(46, 204, 113, 1)';
+  } else if (fv.setName.includes('Few-Or-Mild')) {
+    backgroundColor = 'rgba(241, 196, 15, 0.2)';
+    borderColor = 'rgba(241, 196, 15, 1)'; 
+  } else {
+    // High, Severe, Long-Standing, Less_Motivated, Limited, Short
+    backgroundColor = 'rgba(231, 76, 60, 0.2)';
+    borderColor = 'rgba(231, 76, 60, 1)';
+  }
           
           return {
             label: `${fv.setName} (${Math.round(fv.membershipDegree * 100)}%)`,
