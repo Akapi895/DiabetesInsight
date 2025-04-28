@@ -8,6 +8,7 @@ from app.logic import (
     get_patient_history_logic,
     update_patient_history_logic
 )
+from app.sparql_utils import get_suitable_drugs
 from app.schemas import PatientData, t2dmData, HbA1cUpdateData, PatientHistoryData
 
 router = APIRouter()
@@ -73,5 +74,13 @@ def update_patient_history(history_data: PatientHistoryData):
     try:
         result = update_patient_history_logic(history_data.patient_id, history_data.dict())
         return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/patients/{patient_id}/suitable-drugs")
+def suitable_drugs(patient_id: int):
+    try:
+        drugs = get_suitable_drugs(patient_id)
+        return {"suitable_drugs": drugs}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
