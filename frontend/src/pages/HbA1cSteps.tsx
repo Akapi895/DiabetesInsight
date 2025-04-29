@@ -216,22 +216,24 @@ const HbA1cSteps = () => {
           // Chọn màu dựa trên tên tập mờ
           let backgroundColor, borderColor;
   
-  if (fv.setName.includes('Low') || 
-      fv.setName.includes('Absent') || 
-      fv.setName.includes('Long') ||
-      fv.setName.includes('Newly-Diagnosed') ||
-      fv.setName.includes('Highly_Motivated') || 
-      fv.setName.includes('Readily-Available')) {
-    backgroundColor = 'rgba(46, 204, 113, 0.2)';
-    borderColor = 'rgba(46, 204, 113, 1)';
-  } else if (fv.setName.includes('Few-Or-Mild')) {
-    backgroundColor = 'rgba(241, 196, 15, 0.2)';
-    borderColor = 'rgba(241, 196, 15, 1)'; 
-  } else {
-    // High, Severe, Long-Standing, Less_Motivated, Limited, Short
-    backgroundColor = 'rgba(231, 76, 60, 0.2)';
-    borderColor = 'rgba(231, 76, 60, 1)';
-  }
+          if (fv.setName.includes('Low') || 
+            fv.setName.includes('Absent') || 
+            fv.setName.includes('Long') ||
+            fv.setName.includes('Newly-Diagnosed') ||
+            fv.setName.includes('Highly-Motivated') || 
+            fv.setName.includes('Readily-Available')) {
+              backgroundColor = 'rgba(46, 204, 113, 0.2)';
+              borderColor = 'rgba(46, 204, 113, 1)';
+            } 
+          else if (fv.setName.includes('Few-Or-Mild')) {
+            backgroundColor = 'rgba(241, 196, 15, 0.2)';
+            borderColor = 'rgba(241, 196, 15, 1)'; 
+          } 
+          else {
+            // High, Severe, Long-Standing, Less_Motivated, Limited, Short
+            backgroundColor = 'rgba(231, 76, 60, 0.2)';
+            borderColor = 'rgba(231, 76, 60, 1)';
+          }
           
           return {
             label: `${fv.setName} (${Math.round(fv.membershipDegree * 100)}%)`,
@@ -319,29 +321,29 @@ const HbA1cSteps = () => {
       };
 
       const getNumericValueFromSetName = (setName: string): number => {
-        // Đây là đoạn logic chuyển đổi tên tập thành giá trị từ 0-4
-        // Cần điều chỉnh dựa trên quy tắc đặt tên tập mờ của bạn
-        if (setName.includes('Low') || setName.includes('Newly') || 
-            setName.includes('Very Long') || setName.includes('Absent') || 
-            setName.includes('None') || setName.includes('Highly') || 
-            setName.includes('Readily')) {
+        // Các tập mờ có giá trị biểu diễn 0
+        if (setName.includes('Low') || 
+            setName.includes('Newly-Diagnosed') || 
+            setName.includes('Long') && !setName.includes('Long-Standing') ||
+            setName.includes('Absent') || 
+            setName.includes('Highly_Motivated') || 
+            setName.includes('Readily-Available')) {
           return 0;
-        } else if (setName.includes('Low-Medium') || setName.includes('Short') || 
-                   setName.includes('Long') || setName.includes('Minimal') || 
-                   setName.includes('Very')) {
-          return 1;
-        } else if (setName.includes('Medium') || setName.includes('Moderate') || 
-                   setName.includes('Mild')) {
+        }
+        // Các tập mờ có giá trị biểu diễn 2
+        else if (setName.includes('Few-Or-Mild')) {
           return 2;
-        } else if (setName.includes('Medium-High') || setName.includes('Extended') || 
-                   setName.includes('Limited') || setName.includes('Moderate') || 
-                   setName.includes('Somewhat')) {
-          return 3;
-        } else if (setName.includes('High') || setName.includes('Long-Standing') || 
-                   setName.includes('Short') || setName.includes('Severe') || 
-                   setName.includes('Less')) {
+        }
+        // Các tập mờ có giá trị biểu diễn 4
+        else if (setName.includes('High') || 
+                 setName.includes('Long-Standing') || 
+                 setName.includes('Short') || 
+                 setName.includes('Severe') || 
+                 setName.includes('Less_Motivated') ||
+                 setName.includes('Limited')) {
           return 4;
         }
+        
         return 2; // Giá trị mặc định
       };
       
@@ -350,37 +352,43 @@ const HbA1cSteps = () => {
       const hypoglycemiaRiskValue = getNumericValueFromSetName(
         calculationResult.fuzzifiedInputs.hypoglycemiaRisk.find(
           v => v.membershipDegree > 0
-        )?.setName || 'Medium'
+        )?.setName || 'Low'
       );
       
       const diseaseDurationValue = getNumericValueFromSetName(
         calculationResult.fuzzifiedInputs.diseaseDuration.find(
           v => v.membershipDegree > 0
-        )?.setName || 'Moderate'
+        )?.setName || 'Newly-Diagnosed'
       );
       
       const lifeExpectancyValue = getNumericValueFromSetName(
         calculationResult.fuzzifiedInputs.lifeExpectancy.find(
           v => v.membershipDegree > 0
-        )?.setName || 'Moderate'
+        )?.setName || 'Long'
       );
       
       const comorbiditiesValue = getNumericValueFromSetName(
         calculationResult.fuzzifiedInputs.comorbidities.find(
           v => v.membershipDegree > 0
-        )?.setName || 'Mild'
+        )?.setName || 'Absent'
       );
       
       const vascularComplicationsValue = getNumericValueFromSetName(
         calculationResult.fuzzifiedInputs.vascularComplications.find(
           v => v.membershipDegree > 0
-        )?.setName || 'Mild'
+        )?.setName || 'Absent'
       );
       
       const patientAttitudeValue = getNumericValueFromSetName(
         calculationResult.fuzzifiedInputs.patientAttitude.find(
           v => v.membershipDegree > 0
-        )?.setName || 'Moderately motivated'
+        )?.setName || 'Highly-Motivated'
+      );
+      
+      const resourcesSupportValue = getNumericValueFromSetName(
+        calculationResult.fuzzifiedInputs.resourcesSupport.find(
+          v => v.membershipDegree > 0
+        )?.setName || 'Readily-Available'
       );
       
       setTimeout(() => {
@@ -415,7 +423,7 @@ const HbA1cSteps = () => {
           createFuzzificationChart(
             fuzzificationChartRefs.current.comorbidities,
             fuzzifiedInputs.comorbidities,
-            'Bệnh đồng mắc',
+            'Bệnh lý nền',
             comorbiditiesValue
           );
         }
