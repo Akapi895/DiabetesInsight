@@ -15,7 +15,7 @@ export interface FuzzifiedValue {
   setName: string;
   membershipDegree: number;
   // Thêm biểu diễn đồ họa
-  graphPoints?: {x: number[], y: number[]}; // Dùng cho biểu diễn biểu đồ
+  graphPoints?: { x: number[]; y: number[] }; // Dùng cho biểu diễn biểu đồ
 }
 
 /**
@@ -66,8 +66,8 @@ export interface FuzzyCalculationResult {
   // Đầu ra sau khi khử mờ
   defuzzifiedOutput: {
     crispValue: number;
-    aggregatedMembershipFunction: {x: number[], y: number[]}; // Cho biểu đồ tổng hợp
-    centroidCalculation: {x: number, weightedSum: number, weightSum: number};
+    aggregatedMembershipFunction: { x: number[]; y: number[] }; // Cho biểu đồ tổng hợp
+    centroidCalculation: { x: number; weightedSum: number; weightSum: number };
   };
   // Giá trị HbA1c target cuối cùng
   hba1cTarget: number;
@@ -83,131 +83,141 @@ export const createInputFuzzySets = () => {
   // Nguy cơ hạ đường huyết (0-4 scale)
   const hypoglycemiaRiskSets: FuzzySet[] = [
     {
-      name: 'Low',
-      description: 'Nguy cơ hạ đường huyết thấp',
+      name: "Low",
+      description: "Nguy cơ hạ đường huyết thấp",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.5 ? (-0.5*x+1.25) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.5 ? -0.5 * x + 1.25 : 0,
     },
     {
-      name: 'High',
-      description: 'Nguy cơ hạ đường huyết cao',
+      name: "High",
+      description: "Nguy cơ hạ đường huyết cao",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 1.5 ? 0 : x <= 3.5 ? (0.5*x-0.75) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 1.5 ? 0 : x <= 3.5 ? 0.5 * x - 0.75 : 1,
+    },
   ];
 
   // Thời gian mắc bệnh (0-4 scale)
   const diseaseDurationSets: FuzzySet[] = [
     {
-      name: 'Newly-Diagnosed',
-      description: 'Mới được chẩn đoán',
+      name: "Newly-Diagnosed",
+      description: "Mới được chẩn đoán",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.5 ? (-0.5*x+1.25) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.5 ? -0.5 * x + 1.25 : 0,
     },
     {
-      name: 'Long-Standing',
-      description: 'Thời gian kéo dài',
+      name: "Long-Standing",
+      description: "Thời gian kéo dài",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 1.5 ? 0 : x <= 3.5 ? (0.5*x-0.75) : 1
+      membershipFunction: (x: number) =>
+        x <= 1.5 ? 0 : x <= 3.5 ? 0.5 * x - 0.75 : 1,
     },
   ];
 
   // Tuổi thọ (0-4 scale)
   const lifeExpectancySets: FuzzySet[] = [
     {
-      name: 'Long',
-      description: 'Tuổi thọ dự kiến dài',
+      name: "Long",
+      description: "Tuổi thọ dự kiến dài",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.5 ? (-0.5*x+1.25) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.5 ? -0.5 * x + 1.25 : 0,
     },
     {
-      name: 'Short',
-      description: 'Tuổi thọ dự kiến ngắn',
+      name: "Short",
+      description: "Tuổi thọ dự kiến ngắn",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 1.5 ? 0 : x <= 3.5 ? (0.5*x-0.75) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 1.5 ? 0 : x <= 3.5 ? 0.5 * x - 0.75 : 1,
+    },
   ];
 
   // Bệnh lý đi kèm (0-4 scale)
   const comorbiditiesSets: FuzzySet[] = [
     {
-      name: 'Absent',
-      description: 'Bệnh lý nhẹ hoặc không có',
+      name: "Absent",
+      description: "Bệnh lý nhẹ hoặc không có",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.0 ? (-2/3*x+4/3) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.0 ? (-2 / 3) * x + 4 / 3 : 0,
     },
     {
-      name: 'Few-Or-Mild',
-      description: 'Bệnh lý vừa',
+      name: "Few-Or-Mild",
+      description: "Bệnh lý vừa",
       representativeValue: 2,
-      membershipFunction: (x: number) => 
-        x <= 0.5 ? 0 : 
-        x <= 2.0 ? (2/3*x-1/3) : 
-        x <= 3.5 ? (-2/3*x+7/3) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 0 : x <= 2.0 ? (2 / 3) * x - 1 / 3 : x <= 3.5 ? (-2 / 3) * x + 7 / 3 : 0,
     },
     {
       name: "Severe",
       description: "Bệnh lý nặng",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 2.0 ? 0 : x <= 3.5 ? (2/3*x-4/3) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 2.0 ? 0 : x <= 3.5 ? (2 / 3) * x - 4 / 3 : 1,
+    },
   ];
 
   // Biến chứng mạch máu (0-4 scale)
   const vascularComplicationsSets: FuzzySet[] = [
     {
-      name: 'Absent',
-      description: 'Biến chứng mạch máu nhẹ hoặc không có',
+      name: "Absent",
+      description: "Biến chứng mạch máu nhẹ hoặc không có",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.0 ? (-2/3*x+4/3) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.0 ? (-2 / 3) * x + 4 / 3 : 0,
     },
     {
-      name: 'Few-Or-Mild',
-      description: 'Biến chứng mạch máu vừa',
+      name: "Few-Or-Mild",
+      description: "Biến chứng mạch máu vừa",
       representativeValue: 2,
-      membershipFunction: (x: number) => 
-        x <= 0.5 ? 0 : 
-        x <= 2.0 ? (2/3*x-1/3) : 
-        x <= 3.5 ? (-2/3*x+7/3) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 0 : x <= 2.0 ? (2 / 3) * x - 1 / 3 : x <= 3.5 ? (-2 / 3) * x + 7 / 3 : 0,
     },
     {
       name: "Severe",
       description: "Biến chứng mạch máu nặng",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 2.0 ? 0 : x <= 3.5 ? (2/3*x-4/3) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 2.0 ? 0 : x <= 3.5 ? (2 / 3) * x - 4 / 3 : 1,
+    },
   ];
 
   // Thái độ của bệnh nhân (0-4 scale)
   const patientAttitudeSets: FuzzySet[] = [
     {
-      name: 'Highly_Motivated',
-      description: 'Động lực cao',
+      name: "Highly-Motivated",
+      description: "Động lực cao",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.5 ? (-0.5*x+1.25) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.5 ? -0.5 * x + 1.25 : 0,
     },
     {
-      name: 'Less_Motivated',
-      description: 'Động lực kém',
+      name: "Less-Motivated",
+      description: "Động lực kém",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 1.5 ? 0 : x <= 3.5 ? (0.5*x-0.75) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 1.5 ? 0 : x <= 3.5 ? 0.5 * x - 0.75 : 1,
+    },
   ];
 
   // Nguồn lực và hệ thống hỗ trợ (0-4 scale)
   const resourcesSupportSets: FuzzySet[] = [
     {
-      name: 'Readily-Available',
-      description: 'Nguồn lực sẵn sàng',
+      name: "Readily-Available",
+      description: "Nguồn lực sẵn sàng",
       representativeValue: 0,
-      membershipFunction: (x: number) => x <= 0.5 ? 1 : x <= 2.5 ? (-0.5*x+1.25) : 0
+      membershipFunction: (x: number) =>
+        x <= 0.5 ? 1 : x <= 2.5 ? -0.5 * x + 1.25 : 0,
     },
     {
-      name: 'Limited',
-      description: 'Nguồn lực bị giới hạn',
+      name: "Limited",
+      description: "Nguồn lực bị giới hạn",
       representativeValue: 4,
-      membershipFunction: (x: number) => x <= 1.5 ? 0 : x <= 3.5 ? (0.5*x-0.75) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 1.5 ? 0 : x <= 3.5 ? 0.5 * x - 0.75 : 1,
+    },
   ];
 
   return {
@@ -217,7 +227,7 @@ export const createInputFuzzySets = () => {
     comorbiditiesSets,
     vascularComplicationsSets,
     patientAttitudeSets,
-    resourcesSupportSets
+    resourcesSupportSets,
   };
 };
 
@@ -230,30 +240,32 @@ export const createInputFuzzySets = () => {
 export const createOutputFuzzySets = () => {
   const hba1cTargetSets: FuzzySet[] = [
     {
-      name: 'More-Stringent', 
-      description: 'Kiểm soát nghiêm ngặt hơn',
+      name: "More-Stringent",
+      description: "Kiểm soát nghiêm ngặt hơn",
       representativeValue: 6.5,
-      membershipFunction: (x: number) => 
-        x <= 6.5 ? 1 : 
-        x <= 7.5 ? (-x+7.5) : 0
+      membershipFunction: (x: number) =>
+        x <= 6.5 ? 1 : x <= 7.5 ? -x + 7.5 : 0,
     },
     {
-      name: 'Mild-Stringent', 
-      description: 'Kiểm soát nghiêm ngặt vừa phải',
+      name: "Mild-Stringent",
+      description: "Kiểm soát nghiêm ngặt vừa phải",
       representativeValue: 7.7,
-      membershipFunction: (x: number) => 
-        x <= 6.5 ? 0 : 
-        x <= 7.7 ? (5/6.0*x-65/12.0) : 
-        x <= 9.0 ? (-10/13.0*x+90/13.0) : 0
+      membershipFunction: (x: number) =>
+        x <= 6.5
+          ? 0
+          : x <= 7.7
+          ? (5 / 6.0) * x - 65 / 12.0
+          : x <= 9.0
+          ? (-10 / 13.0) * x + 90 / 13.0
+          : 0,
     },
     {
-      name: 'Less-Stringent',
-      description: 'Kiểm soát ít nghiêm ngặt hơn',
+      name: "Less-Stringent",
+      description: "Kiểm soát ít nghiêm ngặt hơn",
       representativeValue: 7.5,
-      membershipFunction: (x: number) => 
-        x <= 8.0 ? 0 : 
-        x <= 9.0 ? (x-8.0) : 1
-    }
+      membershipFunction: (x: number) =>
+        x <= 8.0 ? 0 : x <= 9.0 ? x - 8.0 : 1,
+    },
   ];
 
   return hba1cTargetSets;
@@ -267,116 +279,106 @@ export const createOutputFuzzySets = () => {
  */
 export const createFuzzyRules = (): FuzzyRule[] => {
   return [
-    { 
+    {
       id: "R1",
       description: "Nếu nguy cơ hạ đường huyết cao thì mục tiêu HbA1c ít nghiêm ngặt hơn",
-      inputs: { hypoglycemiaRisk: 'High' }, 
-      output: 'Less-Stringent', 
-      weight: 0.9 
+      inputs: { hypoglycemiaRisk: "High" },
+      output: "Less-Stringent",
+      weight: 0.9,
     },
-
-    { 
+    {
       id: "R2",
       description: "Nếu thời gian mắc bệnh kéo dài thì mục tiêu HbA1c ít nghiêm ngặt hơn",
-      inputs: { diseaseDuration: 'Long-Standing' }, 
-      output: 'Less-Stringent', 
-      weight: 0.8 
+      inputs: { diseaseDuration: "Long-Standing" },
+      output: "Less-Stringent",
+      weight: 0.8,
     },
-
-    { 
+    {
       id: "R3",
       description: "Nếu tuổi thọ ngắn thì mục tiêu HbA1c ít nghiêm ngặt hơn",
-      inputs: { lifeExpectancy: 'Short' }, 
-      output: 'Less-Stringent', 
-      weight: 0.9 
+      inputs: { lifeExpectancy: "Short" },
+      output: "Less-Stringent",
+      weight: 0.9,
     },
-
-    { 
+    {
       id: "R4",
       description: "Nếu bệnh lý nặng thì mục tiêu HbA1c ít nghiêm ngặt hơn",
-      inputs: { comorbidities: 'Severe' }, 
-      output: 'Less-Stringent', 
-      weight: 0.8 
+      inputs: { comorbidities: "Severe" },
+      output: "Less-Stringent",
+      weight: 0.8,
     },
-
-    { 
+    {
       id: "R5",
       description: "Nếu biến chứng mạch máu nặng thì mục tiêu HbA1c ít nghiêm ngặt hơn",
-      inputs: { vascularComplications: 'Severe' }, 
-      output: 'Less-Stringent', 
-      weight: 0.8 
+      inputs: { vascularComplications: "Severe" },
+      output: "Less-Stringent",
+      weight: 0.8,
     },
-
-    { 
+    {
       id: "R6",
       description: "Nếu mới được chẩn đoán thì mục tiêu HbA1c nghiêm ngặt hơn",
-      inputs: { diseaseDuration: 'Newly-Diagnosed' }, 
-      output: 'More-Stringent', 
-      weight: 0.8 
+      inputs: { diseaseDuration: "Newly-Diagnosed" },
+      output: "More-Stringent",
+      weight: 0.8,
     },
-
-    { 
+    {
       id: "R7",
       description: "Nếu tuổi thọ dài thì mục tiêu HbA1c nghiêm ngặt hơn",
-      inputs: { lifeExpectancy: 'Long' }, 
-      output: 'More-Stringent', 
-      weight: 0.8 
+      inputs: { lifeExpectancy: "Long" },
+      output: "More-Stringent",
+      weight: 0.8,
     },
-
-    { 
+    {
       id: "R8",
       description: "Nếu bệnh nhân rất có động lực thì mục tiêu HbA1c nghiêm ngặt hơn",
-      inputs: { patientAttitude: 'Highly-Motivated' }, 
-      output: 'More-Stringent', 
-      weight: 0.9 
+      inputs: { patientAttitude: "Highly-Motivated" },
+      output: "More-Stringent",
+      weight: 0.9,
     },
-
-    { 
+    {
       id: "R9",
       description: "Nếu nguồn lực sẵn sàng thì mục tiêu HbA1c nghiêm ngặt hơn",
-      inputs: { resourcesSupport: 'Readily-Available' }, 
-      output: 'More-Stringent', 
-      weight: 0.7 
+      inputs: { resourcesSupport: "Readily-Available" },
+      output: "More-Stringent",
+      weight: 0.7,
     },
-
-    { 
+    {
       id: "R10",
-      description: "Nếu nguy cơ hạ đường huyết thấp và không có bệnh đồng mắc và không có biến chứng mạch máu thì mục tiêu HbA1c nghiêm ngặt hơn",
-      inputs: { 
-        hypoglycemiaRisk: 'Low',
-        comorbidities: 'Absent',
-        vascularComplications: 'Absent'
-      }, 
-      output: 'More-Stringent', 
-      weight: 0.9
+      description:
+        "Nếu nguy cơ hạ đường huyết thấp và không có bệnh đồng mắc và không có biến chứng mạch máu thì mục tiêu HbA1c nghiêm ngặt hơn",
+      inputs: {
+        hypoglycemiaRisk: "Low",
+        comorbidities: "Absent",
+        vascularComplications: "Absent",
+      },
+      output: "More-Stringent",
+      weight: 0.9,
     },
-    
-    { 
+    {
       id: "R11",
       description: "Nếu bệnh lý nhẹ thì mục tiêu HbA1c nghiêm ngặt vừa phải",
-      inputs: { comorbidities: 'Few-Or-Mild' }, 
-      output: 'Mild-Stringent', 
-      weight: 0.7 
+      inputs: { comorbidities: "Few-Or-Mild" },
+      output: "Mild-Stringent",
+      weight: 0.7,
     },
-    
-    { 
+    {
       id: "R12",
       description: "Nếu biến chứng mạch máu nhẹ thì mục tiêu HbA1c nghiêm ngặt vừa phải",
-      inputs: { vascularComplications: 'Few-Or-Mild' }, 
-      output: 'Mild-Stringent', 
-      weight: 0.7 
+      inputs: { vascularComplications: "Few-Or-Mild" },
+      output: "Mild-Stringent",
+      weight: 0.7,
     },
-    
-    { 
+    {
       id: "R13",
-      description: "Nếu bệnh lý nhẹ và biến chứng mạch máu nhẹ thì mục tiêu HbA1c ít nghiêm ngặt hơn",
-      inputs: { 
-        comorbidities: 'Few-Or-Mild', 
-        vascularComplications: 'Few-Or-Mild' 
-      }, 
-      output: 'Less-Stringent', 
-      weight: 0.8 
-    }
+      description:
+        "Nếu bệnh lý nhẹ và biến chứng mạch máu nhẹ thì mục tiêu HbA1c ít nghiêm ngặt hơn",
+      inputs: {
+        comorbidities: "Few-Or-Mild",
+        vascularComplications: "Few-Or-Mild",
+      },
+      output: "Less-Stringent",
+      weight: 0.8,
+    },
   ];
 };
 
@@ -389,29 +391,26 @@ export const createFuzzyRules = (): FuzzyRule[] => {
  * @param fuzzySets Các tập mờ để đánh giá thành viên
  * @returns Danh sách các giá trị mờ có chứa mức độ thành viên
  */
-export const fuzzify = (
-  crisp: number, 
-  fuzzySets: FuzzySet[]
-): FuzzifiedValue[] => {
+export const fuzzify = (crisp: number, fuzzySets: FuzzySet[]): FuzzifiedValue[] => {
   // Tính toán mức độ thành viên trong mỗi tập mờ
-  const fuzzifiedValues = fuzzySets.map(set => {
+  const fuzzifiedValues = fuzzySets.map((set) => {
     const membershipDegree = set.membershipFunction(crisp);
-    
+
     // Tạo dữ liệu điểm cho biểu đồ hiển thị
     const graphPoints = {
-      x: Array.from({length: 41}, (_, i) => i / 10), // Tạo điểm từ 0-4 với bước 0.1
-      y: Array.from({length: 41}, (_, i) => set.membershipFunction(i / 10))
+      x: Array.from({ length: 41 }, (_, i) => i / 10), // Tạo điểm từ 0-4 với bước 0.1
+      y: Array.from({ length: 41 }, (_, i) => set.membershipFunction(i / 10)),
     };
-    
+
     return {
       setName: set.name,
       membershipDegree,
-      graphPoints
+      graphPoints,
     };
   });
-  
+
   // Chỉ trả về các tập có mức độ thành viên > 0
-  return fuzzifiedValues.filter(v => v.membershipDegree > 0);
+  return fuzzifiedValues.filter((v) => v.membershipDegree > 0);
 };
 
 /**
@@ -427,15 +426,18 @@ export const fuzzifyAllInputs = (
   resourcesSupport: number
 ) => {
   const inputSets = createInputFuzzySets();
-  
+
   return {
     hypoglycemiaRisk: fuzzify(hypoglycemiaRisk, inputSets.hypoglycemiaRiskSets),
     diseaseDuration: fuzzify(diseaseDuration, inputSets.diseaseDurationSets),
     lifeExpectancy: fuzzify(lifeExpectancy, inputSets.lifeExpectancySets),
     comorbidities: fuzzify(comorbidities, inputSets.comorbiditiesSets),
-    vascularComplications: fuzzify(vascularComplications, inputSets.vascularComplicationsSets),
+    vascularComplications: fuzzify(
+      vascularComplications,
+      inputSets.vascularComplicationsSets
+    ),
     patientAttitude: fuzzify(patientAttitude, inputSets.patientAttitudeSets),
-    resourcesSupport: fuzzify(resourcesSupport, inputSets.resourcesSupportSets)
+    resourcesSupport: fuzzify(resourcesSupport, inputSets.resourcesSupportSets),
   };
 };
 
@@ -452,15 +454,17 @@ export const evaluateRule = (
   let activationLevel = 1; // Sử dụng toán tử MIN cho AND
   let explanation = "Luật được kích hoạt vì ";
   let hasExplanation = false;
-  
+
   // Kiểm tra mỗi đầu vào trong luật
   if (rule.inputs.hypoglycemiaRisk) {
     const matchingFuzzifiedValue = fuzzifiedInputs.hypoglycemiaRisk.find(
-      fv => fv.setName === rule.inputs.hypoglycemiaRisk
+      (fv) => fv.setName === rule.inputs.hypoglycemiaRisk
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `nguy cơ hạ đường huyết '${rule.inputs.hypoglycemiaRisk}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `nguy cơ hạ đường huyết '${rule.inputs.hypoglycemiaRisk}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       // Không tìm thấy tập mờ phù hợp cho đầu vào này
@@ -468,134 +472,148 @@ export const evaluateRule = (
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện nguy cơ hạ đường huyết không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện nguy cơ hạ đường huyết không khớp",
       };
     }
   }
-  
+
   if (rule.inputs.diseaseDuration) {
     const matchingFuzzifiedValue = fuzzifiedInputs.diseaseDuration.find(
-      fv => fv.setName === rule.inputs.diseaseDuration
+      (fv) => fv.setName === rule.inputs.diseaseDuration
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `thời gian mắc bệnh '${rule.inputs.diseaseDuration}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `thời gian mắc bệnh '${rule.inputs.diseaseDuration}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       return {
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện thời gian mắc bệnh không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện thời gian mắc bệnh không khớp",
       };
     }
   }
-  
+
   if (rule.inputs.lifeExpectancy) {
     const matchingFuzzifiedValue = fuzzifiedInputs.lifeExpectancy.find(
-      fv => fv.setName === rule.inputs.lifeExpectancy
+      (fv) => fv.setName === rule.inputs.lifeExpectancy
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `tuổi thọ dự kiến '${rule.inputs.lifeExpectancy}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `tuổi thọ dự kiến '${rule.inputs.lifeExpectancy}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       return {
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện tuổi thọ không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện tuổi thọ không khớp",
       };
     }
   }
-  
+
   if (rule.inputs.comorbidities) {
     const matchingFuzzifiedValue = fuzzifiedInputs.comorbidities.find(
-      fv => fv.setName === rule.inputs.comorbidities
+      (fv) => fv.setName === rule.inputs.comorbidities
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `tình trạng bệnh lý '${rule.inputs.comorbidities}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `tình trạng bệnh lý '${rule.inputs.comorbidities}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       return {
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện bệnh lý không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện bệnh lý không khớp",
       };
     }
   }
-  
+
   if (rule.inputs.vascularComplications) {
     const matchingFuzzifiedValue = fuzzifiedInputs.vascularComplications.find(
-      fv => fv.setName === rule.inputs.vascularComplications
+      (fv) => fv.setName === rule.inputs.vascularComplications
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `biến chứng mạch máu '${rule.inputs.vascularComplications}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `biến chứng mạch máu '${rule.inputs.vascularComplications}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       return {
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện biến chứng mạch máu không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện biến chứng mạch máu không khớp",
       };
     }
   }
-  
+
   if (rule.inputs.patientAttitude) {
     const matchingFuzzifiedValue = fuzzifiedInputs.patientAttitude.find(
-      fv => fv.setName === rule.inputs.patientAttitude
+      (fv) => fv.setName === rule.inputs.patientAttitude
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `thái độ bệnh nhân '${rule.inputs.patientAttitude}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `thái độ bệnh nhân '${rule.inputs.patientAttitude}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       return {
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện thái độ bệnh nhân không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện thái độ bệnh nhân không khớp",
       };
     }
   }
-  
+
   if (rule.inputs.resourcesSupport) {
     const matchingFuzzifiedValue = fuzzifiedInputs.resourcesSupport.find(
-      fv => fv.setName === rule.inputs.resourcesSupport
+      (fv) => fv.setName === rule.inputs.resourcesSupport
     );
     if (matchingFuzzifiedValue) {
       activationLevel = Math.min(activationLevel, matchingFuzzifiedValue.membershipDegree);
-      explanation += `nguồn lực hỗ trợ '${rule.inputs.resourcesSupport}' (${Math.round(matchingFuzzifiedValue.membershipDegree * 100)}%), `;
+      explanation += `nguồn lực hỗ trợ '${rule.inputs.resourcesSupport}' (${Math.round(
+        matchingFuzzifiedValue.membershipDegree * 100
+      )}%), `;
       hasExplanation = true;
     } else {
       return {
         rule,
         activation: 0,
         outputSet: rule.output,
-        explanation: "Luật không được kích hoạt vì điều kiện nguồn lực hỗ trợ không khớp"
+        explanation: "Luật không được kích hoạt vì điều kiện nguồn lực hỗ trợ không khớp",
       };
     }
   }
-  
+
   // Nhân với trọng số của luật
   const weightedActivation = activationLevel * rule.weight;
-  
+
   // Hoàn thiện giải thích
   if (hasExplanation) {
     explanation = explanation.slice(0, -2); // Loại bỏ dấu phẩy và khoảng trắng cuối cùng
   } else {
     explanation = "Luật được kích hoạt với mức độ thấp";
   }
-  
+
   return {
     rule,
     activation: weightedActivation,
     outputSet: rule.output,
-    explanation: `${explanation}. Mức độ kích hoạt cuối cùng: ${Math.round(weightedActivation * 100)}%`
+    explanation: `${explanation}. Mức độ kích hoạt cuối cùng: ${Math.round(
+      weightedActivation * 100
+    )}%`,
   };
 };
 
@@ -612,11 +630,11 @@ export const evaluateAllRules = (
     console.warn("Không có luật mờ nào được kích hoạt.");
     return [];
   }
-  
+
   // Đánh giá từng luật và lọc ra những luật có mức kích hoạt > 0
   const ruleActivations = rules
-    .map(rule => evaluateRule(rule, fuzzifiedInputs))
-    .filter(activation => activation.activation > 0);
+    .map((rule) => evaluateRule(rule, fuzzifiedInputs))
+    .filter((activation) => activation.activation > 0);
 
   return ruleActivations;
 };
@@ -665,9 +683,9 @@ export const aggregateOutputs = (
     let maxMembershipValue = 0;
 
     // Với mỗi luật được kích hoạt
-    ruleActivations.forEach(activation => {
+    ruleActivations.forEach((activation) => {
       // Tìm tập mờ đầu ra tương ứng
-      const outputSet = outputSets.find(set => set.name === activation.outputSet);
+      const outputSet = outputSets.find((set) => set.name === activation.outputSet);
 
       if (outputSet) {
         // Tính giá trị thành viên cho x, giới hạn bởi mức độ kích hoạt luật
@@ -702,8 +720,12 @@ export const aggregateOutputs = (
  * Phương pháp khử mờ trung bình có trọng số - BƯỚC 4 của logic mờ
  */
 export const defuzzify = (
-  aggregatedOutput: { x: number[], y: number[], membershipBySet: Record<string, number[]> }
-): { crispValue: number, centroidCalculation: { weightedSum: number, weightSum: number } } => {
+  aggregatedOutput: {
+    x: number[];
+    y: number[];
+    membershipBySet: Record<string, number[]>;
+  }
+): { crispValue: number; centroidCalculation: { x: number; weightedSum: number; weightSum: number } } => {
   const { membershipBySet } = aggregatedOutput;
 
   // Định nghĩa giá trị trung bình của từng tập mờ (theo mô tả)
@@ -717,7 +739,7 @@ export const defuzzify = (
   if (!membershipBySet || Object.keys(membershipBySet).length === 0) {
     return {
       crispValue: 6.5,
-      centroidCalculation: { weightedSum: 0, weightSum: 0 },
+      centroidCalculation: { x: 6.5, weightedSum: 0, weightSum: 0 },
     };
   }
 
@@ -745,7 +767,7 @@ export const defuzzify = (
   if (weightSum === 0) {
     return {
       crispValue: 6.5,
-      centroidCalculation: { weightedSum: 0, weightSum: 0 },
+      centroidCalculation: { x: 6.5, weightedSum: 0, weightSum: 0 },
     };
   }
 
@@ -758,6 +780,7 @@ export const defuzzify = (
   return {
     crispValue: roundedValue,
     centroidCalculation: {
+      x: roundedValue, // Thêm trường x, sử dụng giá trị crispValue đã tính
       weightedSum,
       weightSum,
     },
@@ -782,59 +805,93 @@ export const mapLanguageToNumeric = (
   // Chuyển đổi hypoglycemia risk
   let hypoglycemiaRiskValue: number;
   switch (hypoglycemiaRisk) {
-    case 'Low': hypoglycemiaRiskValue = 0; break;
-    case 'High': hypoglycemiaRiskValue = 4; break;
-    default: hypoglycemiaRiskValue = 2; // Default to Medium
+    case "Low":
+      hypoglycemiaRiskValue = 0;
+      break;
+    case "High":
+      hypoglycemiaRiskValue = 4;
+      break;
+    default:
+      hypoglycemiaRiskValue = 2; // Default to Medium
   }
-  
+
   // Chuyển đổi disease duration từ năm sang thang đo 0-4
   let diseaseDurationValue: number;
   if (diseaseDuration <= 5) diseaseDurationValue = 0; // Newly Diagnosed
   else if (diseaseDuration >= 10) diseaseDurationValue = 4; // Long-Standing
   else diseaseDurationValue = 2;
-  
+
   // Chuyển đổi life expectancy
   let lifeExpectancyValue: number;
   switch (lifeExpectancy) {
-    case 'Long': lifeExpectancyValue = 0; break;
-    case 'Short': lifeExpectancyValue = 4; break;
-    default: lifeExpectancyValue = 2; // Default to Moderate
+    case "Long":
+      lifeExpectancyValue = 0;
+      break;
+    case "Short":
+      lifeExpectancyValue = 4;
+      break;
+    default:
+      lifeExpectancyValue = 2; // Default to Moderate
   }
-  
+
   // Chuyển đổi comorbidities
   let comorbiditiesValue: number;
   switch (comorbidities) {
-    case 'Absent': comorbiditiesValue = 0; break;
-    case 'Few-Or-Mild': comorbiditiesValue = 2; break;
-    case 'Severe': comorbiditiesValue = 4; break;
-    default: comorbiditiesValue = 2; // Default to Mild
+    case "Absent":
+      comorbiditiesValue = 0;
+      break;
+    case "Few-Or-Mild":
+      comorbiditiesValue = 2;
+      break;
+    case "Severe":
+      comorbiditiesValue = 4;
+      break;
+    default:
+      comorbiditiesValue = 2; // Default to Mild
   }
-  
+
   // Chuyển đổi vascular complications
   let vascularComplicationsValue: number;
   switch (vascularComplications) {
-    case 'None': vascularComplicationsValue = 0; break;
-    case 'Few-Or-Mild': vascularComplicationsValue = 2; break;
-    case 'Severe': vascularComplicationsValue = 4; break;
-    default: vascularComplicationsValue = 2; // Default to Mild
+    case "None":
+      vascularComplicationsValue = 0;
+      break;
+    case "Few-Or-Mild":
+      vascularComplicationsValue = 2;
+      break;
+    case "Severe":
+      vascularComplicationsValue = 4;
+      break;
+    default:
+      vascularComplicationsValue = 2; // Default to Mild
   }
-  
+
   // Chuyển đổi patient attitude
   let patientAttitudeValue: number;
   switch (patientAttitude) {
-    case 'Highly-Motivated': patientAttitudeValue = 0; break;
-    case 'Less-Motivated': patientAttitudeValue = 4; break;
-    default: patientAttitudeValue = 2; // Default to Moderately motivated
+    case "Highly-Motivated":
+      patientAttitudeValue = 0;
+      break;
+    case "Less-Motivated":
+      patientAttitudeValue = 4;
+      break;
+    default:
+      patientAttitudeValue = 2; // Default to Moderately motivated
   }
-  
+
   // Chuyển đổi resources and support
   let resourcesSupportValue: number;
   switch (resourcesSupport) {
-    case 'Readily-Available': resourcesSupportValue = 0; break;
-    case 'Limited': resourcesSupportValue = 4; break;
-    default: resourcesSupportValue = 2; // Default to Moderate
+    case "Readily-Available":
+      resourcesSupportValue = 0;
+      break;
+    case "Limited":
+      resourcesSupportValue = 4;
+      break;
+    default:
+      resourcesSupportValue = 2; // Default to Moderate
   }
-  
+
   return {
     hypoglycemiaRiskValue,
     diseaseDurationValue,
@@ -842,7 +899,7 @@ export const mapLanguageToNumeric = (
     comorbiditiesValue,
     vascularComplicationsValue,
     patientAttitudeValue,
-    resourcesSupportValue
+    resourcesSupportValue,
   };
 };
 
@@ -861,7 +918,7 @@ export const calculateHbA1cTarget = (
   comorbidities: string,
   vascularComplications: string,
   patientAttitude: string,
-  resourcesSupport: string = 'Moderate' // Giá trị mặc định nếu không cung cấp
+  resourcesSupport: string = "Moderate" // Giá trị mặc định nếu không cung cấp
 ): FuzzyCalculationResult => {
   // BƯỚC 0: Chuyển đổi giá trị ngôn ngữ sang thang đo 0-4
   const {
@@ -925,26 +982,6 @@ export const calculateHbA1cTarget = (
 };
 
 /**
- * Định nghĩa kiểu dữ liệu cho kết quả tính toán logic mờ
- */
-export interface FuzzyCalculationResult {
-  fuzzifiedInputs: ReturnType<typeof fuzzifyAllInputs>;
-  ruleActivations: RuleActivation[];
-  defuzzifiedOutput: {
-    crispValue: number;
-    aggregatedMembershipFunction: {
-      x: number[];
-      y: number[];
-    };
-    centroidCalculation: {
-      weightedSum: number;
-      weightSum: number;
-    };
-  };
-  hba1cTarget: number;
-}
-
-/**
  * Phiên bản đơn giản hơn của hàm tính toán target HbA1c
  * Chỉ trả về kết quả cuối cùng và các luật đã kích hoạt
  */
@@ -955,7 +992,7 @@ export const calculateHbA1cTargetSimplified = (
   comorbidities: string,
   vascularComplications: string,
   patientAttitude: string,
-  resourcesSupport: string = 'Moderate' // Giá trị mặc định nếu không cung cấp
+  resourcesSupport: string = "Moderate" // Giá trị mặc định nếu không cung cấp
 ): {
   target: number;
   ruleActivations: { rule: FuzzyRule; activation: number }[];
