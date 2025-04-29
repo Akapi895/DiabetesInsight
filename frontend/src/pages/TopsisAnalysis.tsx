@@ -3,35 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { calculateTOPSIS, TopsisMatrix, TopsisResult } from '../utils/topsis';
 import '../styles/TopsisAnalysis.css';
 
-// Dữ liệu mẫu cứng (hardcoded)
-const mockPatient = {
-  id: 1,
-  personal: {
-    name: "Nguyễn Văn A",
-    age: 62,
-    gender: "Nam"
-  },
-  diabetes: {
-    diabetesType: 2,
-    hba1cLevel: 7.8,
-    diseaseDuration: 8,
-    hypoglycemiaRisk: 3,
-    importantComorbidities: 2
-  }
-};
-
-const mockPatientHistory = {
-  cvd: ['Blunt myocardial ischemic preconditioning', 'Increase Heart rate'],
-  renalGu: ['Increase Cr: transient', 'Genitourinary infections'],
-  others: [],
-  hypo: ['Hypoglycemia'],
-  weight: ['Weight gain'],
-  bone: [],
-  giSx: ['Gastrointestinal'],
-  chf: ['Heart failure'],
-  adrs: ['Biguanides (MET)', 'Sulfonylureas (SU)']
-};
-
 // Ma trận thuốc mẫu cứng
 const mockDrugMatrix: TopsisMatrix = {
   matrix: [
@@ -80,13 +51,30 @@ const TopsisAnalysis = () => {
   const navigate = useNavigate();
   
   // States
-  const [patient, setPatient] = useState<any>(mockPatient);
-  const [patientHistory, setPatientHistory] = useState<any>(mockPatientHistory);
+  const [patient, setPatient] = useState<any>(null);
+  const [patientHistory, setPatientHistory] = useState<any>(null);
   const [topsisData, setTopsisData] = useState<TopsisMatrix>(mockDrugMatrix);
   const [topsisResult, setTopsisResult] = useState<TopsisResult | null>(null);
   const [customWeights, setCustomWeights] = useState<number[]>(mockDrugMatrix.weights);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [suitableDrugs, setSuitableDrugs] = useState<string[] | null>(null);
+
+  // Lấy thông tin bệnh nhân
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/patients/${id}`)
+      .then(res => res.json())
+      .then(data => setPatient(data))
+      .catch(() => setError("Không lấy được thông tin bệnh nhân"));
+  }, [id]);
+
+  // Lấy lịch sử bệnh nhân
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/patients/history/${id}`)
+      .then(res => res.json())
+      .then(data => setPatientHistory(data))
+      .catch(() => setError("Không lấy được lịch sử bệnh nhân"));
+  }, [id]);
 
   // Tính toán trọng số tùy chỉnh dựa trên lịch sử bệnh nhân
   const calculateCustomWeightsFromHistory = (history: any) => {
@@ -134,18 +122,27 @@ const TopsisAnalysis = () => {
     return normalizedWeights;
   };
 
+  // Khi patientHistory thay đổi, tính lại trọng số
+  useEffect(() => {
+    if (!patientHistory) return;
+    const weights = calculateCustomWeightsFromHistory(patientHistory);
+    setCustomWeights(weights);
+
+    // Cập nhật topsisData với trọng số mới
+    setTopsisData(prev => ({
+      ...prev,
+      weights
+    }));
+  }, [patientHistory]);
+
   // Khởi tạo dữ liệu và tính toán TOPSIS khi component mount
   useEffect(() => {
     const initializeTopsisData = () => {
       try {
         setLoading(true);
         
-        // Sử dụng mock data
-        setPatient(mockPatient);
-        setPatientHistory(mockPatientHistory);
-        
         // Tính toán trọng số dựa trên lịch sử bệnh
-        const weights = calculateCustomWeightsFromHistory(mockPatientHistory);
+        const weights = calculateCustomWeightsFromHistory(patientHistory || {});
         setCustomWeights(weights);
         
         // Cập nhật topsis data với trọng số mới
@@ -168,8 +165,48 @@ const TopsisAnalysis = () => {
       }
     };
 
-    initializeTopsisData();
-  }, []);
+    if (patientHistory) {
+      initializeTopsisData();
+    }
+  }, [patientHistory]);
+
+  // Lấy danh sách thuốc phù hợp từ API
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/patients/${id}/suitable-drugs`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data.suitable_drugs)) {
+          setSuitableDrugs(data.suitable_drugs);
+        } else {
+          setSuitableDrugs([]);
+        }
+      });
+  }, [id]);
+
+  // Khi suitableDrugs đã có, lọc lại ma trận và labels
+  useEffect(() => {
+    if (!suitableDrugs) return;
+
+    // Lấy index các thuốc phù hợp trong drugLabels
+    const indices = mockDrugMatrix.drugLabels
+      .map((label, idx) => suitableDrugs.some(drug => label.includes(drug) || drug.includes(label)) ? idx : -1)
+      .filter(idx => idx !== -1);
+
+    // Lọc lại drugLabels và các ma trận theo indices
+    const filteredDrugLabels = indices.map(idx => mockDrugMatrix.drugLabels[idx]);
+    const filteredMatrix = mockDrugMatrix.matrix.map(row => indices.map(idx => row[idx]));
+
+    // Tạo ma trận mới cho TOPSIS
+    const filteredTopsisMatrix = {
+      ...mockDrugMatrix,
+      drugLabels: filteredDrugLabels,
+      matrix: filteredMatrix
+    };
+
+    setTopsisData(filteredTopsisMatrix);
+    const result = calculateTOPSIS(filteredTopsisMatrix);
+    setTopsisResult(result);
+  }, [suitableDrugs]);
 
   // Xử lý thay đổi trọng số từ người dùng
   const handleWeightChange = (index: number, value: number) => {
@@ -198,7 +235,7 @@ const TopsisAnalysis = () => {
     return num.toFixed(3);
   };
 
-  if (loading) {
+  if (!patient || !patientHistory || loading) {
     return <div className="loading-state">Đang tải dữ liệu phân tích thuốc...</div>;
   }
   
@@ -221,24 +258,24 @@ const TopsisAnalysis = () => {
       {/* Thông tin tóm tắt bệnh nhân */}
       <div className="patient-summary">
         <div className="patient-info">
-          <h2>{patient.personal.name}</h2>
-          <span className="patient-id">ID: {patient.id}</span>
+          <h2>{patient?.personal?.name}</h2>
+          <span className="patient-id">ID: {patient?.id}</span>
         </div>
         <div className="patient-metrics">
           <div className="metric-item">
             <span className="metric-label">Tuổi:</span>
-            <span className="metric-value">{patient.personal.age}</span>
+            <span className="metric-value">{patient?.personal?.age}</span>
           </div>
           <div className="metric-item">
             <span className="metric-label">Loại đái tháo đường:</span>
             <span className="metric-value">
-              {patient.diabetes.diabetesType === 1 ? 'Type 1' : 
-               patient.diabetes.diabetesType === 2 ? 'Type 2' : 'Khác'}
+              {patient?.diabetes?.diabetesType === 1 ? 'Type 1' : 
+               patient?.diabetes?.diabetesType === 2 ? 'Type 2' : 'Khác'}
             </span>
           </div>
           <div className="metric-item">
             <span className="metric-label">HbA1c:</span>
-            <span className="metric-value">{patient.diabetes.hba1cLevel}%</span>
+            <span className="metric-value">{patient?.diabetes?.hba1cLevel}%</span>
           </div>
         </div>
       </div>
@@ -284,14 +321,14 @@ const TopsisAnalysis = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {topsisResult.drugLabels.map((drug, j) => (
+                  {topsisResult.drugLabels.map((drug, j) => (
                     <tr key={j}>
-                        <td>{drug}</td>
-                        {topsisResult.criteriaLabels.map((_, i) => (
+                      <td>{drug}</td>
+                      {topsisResult.criteriaLabels.map((_, i) => (
                         <td key={i}>{topsisResult.matrix[i][j]}</td>
-                        ))}
+                      ))}
                     </tr>
-                    ))}
+                  ))}
                 </tbody>
                 </table>
             </div>
@@ -415,37 +452,37 @@ const TopsisAnalysis = () => {
           <div className="patient-relevance">
             <h4>Trọng số được điều chỉnh theo lịch sử bệnh:</h4>
             <div className="history-relevance">
-              {patientHistory.hypo && patientHistory.hypo.length > 0 && (
+              {patientHistory?.hypo && patientHistory.hypo.length > 0 && (
                 <div className="relevance-item">
                   <strong>Hypoglycemia Risk:</strong> Trọng số cao hơn do bệnh nhân có tiền sử hạ đường huyết
                 </div>
               )}
-              {patientHistory.weight && patientHistory.weight.length > 0 && (
+              {patientHistory?.weight && patientHistory.weight.length > 0 && (
                 <div className="relevance-item">
                   <strong>Weight Effect:</strong> Trọng số cao hơn do bệnh nhân có vấn đề về cân nặng
                 </div>
               )}
-              {patientHistory.renalGu && patientHistory.renalGu.length > 0 && (
+              {patientHistory?.renalGu && patientHistory.renalGu.length > 0 && (
                 <div className="relevance-item">
                   <strong>Renal/GU Effect:</strong> Trọng số cao hơn do bệnh nhân có vấn đề về thận
                 </div>
               )}
-              {patientHistory.giSx && patientHistory.giSx.length > 0 && (
+              {patientHistory?.giSx && patientHistory.giSx.length > 0 && (
                 <div className="relevance-item">
                   <strong>GI Side Effects:</strong> Trọng số cao hơn do bệnh nhân có vấn đề tiêu hóa
                 </div>
               )}
-              {patientHistory.chf && patientHistory.chf.length > 0 && (
+              {patientHistory?.chf && patientHistory.chf.length > 0 && (
                 <div className="relevance-item">
                   <strong>CHF Risk:</strong> Trọng số cao hơn do bệnh nhân có vấn đề về tim
                 </div>
               )}
-              {patientHistory.cvd && patientHistory.cvd.length > 0 && (
+              {patientHistory?.cvd && patientHistory.cvd.length > 0 && (
                 <div className="relevance-item">
                   <strong>CVD Effect:</strong> Trọng số cao hơn do bệnh nhân có vấn đề về tim mạch
                 </div>
               )}
-              {patientHistory.bone && patientHistory.bone.length > 0 && (
+              {patientHistory?.bone && patientHistory.bone.length > 0 && (
                 <div className="relevance-item">
                   <strong>Bone Effect:</strong> Trọng số cao hơn do bệnh nhân có vấn đề về xương
                 </div>
@@ -629,29 +666,31 @@ const TopsisAnalysis = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {topsisResult.rankedIndices.map((index, rank) => (
-                    <tr key={index} className={rank === 0 ? 'top-rank' : ''}>
-                      <td>{rank + 1}</td>
-                      <td>{topsisResult.drugLabels[index]}</td>
-                      <td>{formatNumber(topsisResult.relativeCloseness[index])}</td>
-                      <td>
-                        <div className="rating-bar-container">
-                          <div 
-                            className="rating-bar" 
-                            style={{width: `${topsisResult.relativeCloseness[index] * 100}%`}}
-                          ></div>
-                          <span className="rating-text">
-                            {
-                              topsisResult.relativeCloseness[index] > 0.8 ? 'Rất phù hợp' :
-                              topsisResult.relativeCloseness[index] > 0.6 ? 'Phù hợp' :
-                              topsisResult.relativeCloseness[index] > 0.4 ? 'Trung bình' :
-                              topsisResult.relativeCloseness[index] > 0.2 ? 'Ít phù hợp' :
-                              'Không phù hợp'
-                            }
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
+                  {topsisResult.rankedIndices
+                    .filter(index => !!topsisResult.drugLabels[index]) // chỉ lấy các thuốc có tên
+                    .map((index, rank) => (
+                      <tr key={index} className={rank === 0 ? 'top-rank' : ''}>
+                        <td>{rank + 1}</td>
+                        <td>{topsisResult.drugLabels[index]}</td>
+                        <td>{formatNumber(topsisResult.relativeCloseness[index])}</td>
+                        <td>
+                          <div className="rating-bar-container">
+                            <div 
+                              className="rating-bar" 
+                              style={{width: `${topsisResult.relativeCloseness[index] * 100}%`}}
+                            ></div>
+                            <span className="rating-text">
+                              {
+                                topsisResult.relativeCloseness[index] > 0.8 ? 'Rất phù hợp' :
+                                topsisResult.relativeCloseness[index] > 0.6 ? 'Phù hợp' :
+                                topsisResult.relativeCloseness[index] > 0.4 ? 'Trung bình' :
+                                topsisResult.relativeCloseness[index] > 0.2 ? 'Ít phù hợp' :
+                                'Không phù hợp'
+                              }
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
                   ))}
                 </tbody>
               </table>
@@ -675,7 +714,7 @@ const TopsisAnalysis = () => {
             <div className="recommendation-details">
               <h4>Lý do lựa chọn:</h4>
               <ul>
-                {patientHistory.hypo && patientHistory.hypo.length > 0 && (
+                {patientHistory?.hypo && patientHistory.hypo.length > 0 && (
                   <li>
                     Bệnh nhân có tiền sử hạ đường huyết: 
                     {topsisResult.matrix[0][topsisResult.rankedIndices[0]] <= 3 ? 
@@ -684,7 +723,7 @@ const TopsisAnalysis = () => {
                   </li>
                 )}
                 
-                {patientHistory.weight && patientHistory.weight.length > 0 && (
+                {patientHistory?.weight && patientHistory.weight.length > 0 && (
                   <li>
                     Bệnh nhân có vấn đề về cân nặng: 
                     {topsisResult.matrix[1][topsisResult.rankedIndices[0]] <= 3 ? 
@@ -693,7 +732,7 @@ const TopsisAnalysis = () => {
                   </li>
                 )}
                 
-                {patientHistory.renalGu && patientHistory.renalGu.length > 0 && (
+                {patientHistory?.renalGu && patientHistory.renalGu.length > 0 && (
                   <li>
                     Bệnh nhân có vấn đề về thận: 
                     {topsisResult.matrix[2][topsisResult.rankedIndices[0]] <= 3 ? 
@@ -702,7 +741,7 @@ const TopsisAnalysis = () => {
                   </li>
                 )}
                 
-                {patientHistory.giSx && patientHistory.giSx.length > 0 && (
+                {patientHistory?.giSx && patientHistory.giSx.length > 0 && (
                   <li>
                     Bệnh nhân có vấn đề tiêu hóa: 
                     {topsisResult.matrix[3][topsisResult.rankedIndices[0]] <= 3 ? 
@@ -711,7 +750,7 @@ const TopsisAnalysis = () => {
                   </li>
                 )}
                 
-                {patientHistory.chf && patientHistory.chf.length > 0 && (
+                {patientHistory?.chf && patientHistory.chf.length > 0 && (
                   <li>
                     Bệnh nhân có vấn đề về tim: 
                     {topsisResult.matrix[4][topsisResult.rankedIndices[0]] <= 3 ? 

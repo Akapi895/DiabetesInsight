@@ -6,7 +6,13 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 from app.schemas import PatientData, t2dmData
 
+from rdflib import Graph, Namespace, Literal, RDF
+from rdflib.namespace import XSD
+
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), "../diabetes.db")
+g = Graph()
+g.parse("diabetes.rdf", format="xml")
+DIABETES = Namespace("http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#")
 
 def add_patient_logic(data: PatientData) -> dict:
     try:        
@@ -33,6 +39,12 @@ def add_patient_logic(data: PatientData) -> dict:
         cursor.execute("SELECT last_insert_rowid()")
         patient_id = cursor.fetchone()[0]
 
+        # thêm vào ontology
+        individual_name = f"Patient{patient_id}"
+        patient_uri = DIABETES[individual_name]
+
+        g.add((patient_uri, RDF.type, DIABETES.Patients))
+        g.serialize(destination="diabetes.rdf", format="pretty-xml")
         
         cursor.execute(
             """
@@ -578,6 +590,29 @@ def update_patient_history_logic(patient_id: int, history_data: dict) -> dict:
         
         conn.commit()
         conn.close()
+
+        # xử lý ontology
+        patient_uri = DIABETES[f"Patient{patient_id}"]
+
+        for s, p, o in list(g.triples((patient_uri, DIABETES.has_History_of_Diseases, None))):
+            g.remove((s, p, o))
+
+        for s, p, o in list(g.triples((patient_uri, DIABETES.has_Adverse_Drug_Reactions, None))):
+            g.remove((s, p, o))
+
+        for category in medical_categories:
+            if category in history_data and isinstance(history_data[category], list):
+                for condition in history_data[category]:
+                    condition_uri = DIABETES[condition.replace(" ", "_")]
+                    g.add((patient_uri, DIABETES.has_History_of_Diseases, condition_uri))
+
+        if "adrs" in history_data and isinstance(history_data["adrs"], list):
+            for drug in history_data["adrs"]:
+                drug_uri = DIABETES[drug.replace(" ", "_")]
+                g.add((patient_uri, DIABETES.has_Adverse_Drug_Reactions, drug_uri))
+
+        # Lưu lại ontology
+        g.serialize(destination="diabetes.rdf", format="pretty-xml")
         
         return {
             "message": "Patient history updated successfully",
