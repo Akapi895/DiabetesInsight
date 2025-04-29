@@ -15,6 +15,42 @@
   <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Microvascular_risk:UKPDS">
     <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
   </owl:NamedIndividual>
+  <Patients rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient13">
+    <has_History_of_Diseases>
+      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Mitogenic_effects">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+      </owl:NamedIndividual>
+    </has_History_of_Diseases>
+    <has_History_of_Diseases>
+      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+      </owl:NamedIndividual>
+    </has_History_of_Diseases>
+    <has_History_of_Diseases>
+      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Heart_failure_hospitalizations">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
+      </owl:NamedIndividual>
+    </has_History_of_Diseases>
+    <has_Adverse_Drug_Reactions>
+      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#DPP-4">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Acute_pancreatitis"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Heart_failure_hospitalizations"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Angioedema/urticaria"/>
+      </owl:NamedIndividual>
+    </has_Adverse_Drug_Reactions>
+    <has_Adverse_Drug_Reactions>
+      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Insulins">
+        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Injectable"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Mitogenic_effects"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_reluctance_about_injection"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Training_requirements"/>
+        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Weight_gain"/>
+      </owl:NamedIndividual>
+    </has_Adverse_Drug_Reactions>
+  </Patients>
   <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_Attitude">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </owl:DatatypeProperty>
@@ -40,11 +76,7 @@
         <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
       </owl:NamedIndividual>
     </has_Disadvantages>
-    <has_Disadvantages>
-      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Mitogenic_effects">
-        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
-      </owl:NamedIndividual>
-    </has_Disadvantages>
+    <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Mitogenic_effects"/>
     <has_Disadvantages>
       <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_reluctance_about_injection">
         <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
@@ -95,17 +127,7 @@
         <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Lactic_acidosis_risk:rare"/>
       </owl:NamedIndividual>
     </has_Adverse_Drug_Reactions>
-    <has_Adverse_Drug_Reactions>
-      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Insulins">
-        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Injectable"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Mitogenic_effects"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient_reluctance_about_injection"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Training_requirements"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Weight_gain"/>
-      </owl:NamedIndividual>
-    </has_Adverse_Drug_Reactions>
+    <has_Adverse_Drug_Reactions rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Insulins"/>
     <has_History_of_Diseases>
       <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Polyuria">
         <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
@@ -148,27 +170,11 @@
     </has_History_of_Diseases>
     <has_History_of_Diseases rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Bone_fractures"/>
     <has_History_of_Diseases rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Gastrointestinal"/>
-    <has_Adverse_Drug_Reactions>
-      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#DPP-4">
-        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Agents"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Acute_pancreatitis"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Heart_failure_hospitalizations"/>
-        <has_Disadvantages rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Angioedema/urticaria"/>
-      </owl:NamedIndividual>
-    </has_Adverse_Drug_Reactions>
+    <has_Adverse_Drug_Reactions rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#DPP-4"/>
   </rdf:Description>
   <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Postprandial_glucose_excursions">
     <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Advantages"/>
   </owl:NamedIndividual>
-  <Patients rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient13">
-    <has_History_of_Diseases rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Mitogenic_effects"/>
-    <has_History_of_Diseases>
-      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia">
-        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
-      </owl:NamedIndividual>
-    </has_History_of_Diseases>
-    <has_Adverse_Drug_Reactions rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Insulins"/>
-  </Patients>
   <owl:Ontology rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes"/>
   <rdf:Description rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient7">
     <has_History_of_Diseases>
@@ -287,11 +293,7 @@
   </owl:DatatypeProperty>
   <rdf:Description rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Patient9">
     <has_History_of_Diseases rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Hypoglycemia"/>
-    <has_History_of_Diseases>
-      <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Heart_failure_hospitalizations">
-        <rdf:type rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Glucose-Lowering_Disadvantages"/>
-      </owl:NamedIndividual>
-    </has_History_of_Diseases>
+    <has_History_of_Diseases rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Heart_failure_hospitalizations"/>
     <has_Adverse_Drug_Reactions rdf:resource="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Sulfonylureas_(SU)"/>
   </rdf:Description>
   <owl:NamedIndividual rdf:about="http://www.semanticweb.org/admin/ontologies/2025/3/diabetes#Decrease_Weight">

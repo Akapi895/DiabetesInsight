@@ -60,6 +60,16 @@ const TopsisAnalysis = () => {
   const [error, setError] = useState<string | null>(null);
   const [suitableDrugs, setSuitableDrugs] = useState<string[] | null>(null);
 
+  const drugLabelToName: Record<string, string> = {
+    'MET': 'Metformin',
+    'SU': 'Glimepiride',
+    'TZDs': 'Pioglitazone',
+    'DPP-4': 'Sitagliptin',
+    'SGLT2': 'Empagliflozin',
+    'GLP-1': 'Liraglutide',
+    'Insulins': 'Insulin Glargine'
+  };
+
   // Lấy thông tin bệnh nhân
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/api/patients/${id}`)
@@ -177,8 +187,15 @@ const TopsisAnalysis = () => {
       .then(data => {
         if (Array.isArray(data.suitable_drugs)) {
           setSuitableDrugs(data.suitable_drugs);
+          // Kiểm tra nếu suitable_drugs rỗng
+          if (data.suitable_drugs.length === 0) {
+            alert('Không tìm thấy thuốc phù hợp cho bệnh nhân này!');
+            navigate(`/patients/${id}`);
+          }
         } else {
           setSuitableDrugs([]);
+          alert('Không tìm thấy thuốc phù hợp cho bệnh nhân này!');
+          navigate(`/patients/${id}`);
         }
       });
   }, [id]);
@@ -242,6 +259,97 @@ const TopsisAnalysis = () => {
   if (error) {
     return <div className="error-state">{error}</div>;
   }
+
+  // Liều khởi đầu cho các thuốc
+  const getStartingDose = (drug: string) => {
+    const doses: Record<string, string> = {
+      'Metformin': '500 mg/ngày, dùng cùng bữa ăn, tăng dần đến 1000-2000 mg/ngày nếu dung nạp tốt',
+      'Empagliflozin': '10 mg/ngày, uống vào buổi sáng, có thể tăng lên 25 mg/ngày',
+      'Dapagliflozin': '5 mg/ngày, uống vào buổi sáng, có thể tăng lên 10 mg/ngày',
+      'Liraglutide': '0.6 mg/ngày, tiêm dưới da, tăng lên 1.2-1.8 mg/ngày sau 1 tuần',
+      'Semaglutide': '0.25 mg/tuần, tiêm dưới da, tăng lên 0.5-1 mg/tuần sau 4 tuần',
+      'Sitagliptin': '100 mg/ngày, uống cùng hoặc không cùng bữa ăn',
+      'Glimepiride': '1-2 mg/ngày, uống trước bữa ăn sáng, có thể tăng lên 4 mg/ngày',
+      'Insulin Glargine': '0.1-0.2 đơn vị/kg/ngày, tiêm dưới da vào cùng thời điểm mỗi ngày',
+      'Pioglitazone': '15 mg/ngày, uống cùng hoặc không cùng bữa ăn, có thể tăng lên 30-45 mg/ngày'
+    };
+    return doses[drug] || 'Tham khảo bác sĩ';
+  };
+
+  // Hướng dẫn theo dõi khi sử dụng thuốc
+  const getMonitoringInstructions = (drug: string) => {
+    const instructions: Record<string, string> = {
+      'Metformin': 'Kiểm tra chức năng thận (eGFR) mỗi 6-12 tháng, theo dõi vitamin B12 nếu dùng lâu dài',
+      'Empagliflozin': 'Theo dõi dấu hiệu mất nước, hạ huyết áp, nhiễm trùng tiết niệu, và ketone máu',
+      'Dapagliflozin': 'Kiểm tra chức năng thận và dấu hiệu nhiễm trùng tiết niệu hoặc sinh dục',
+      'Liraglutide': 'Theo dõi nhịp tim, dấu hiệu viêm tụy, và triệu chứng tiêu hóa (buồn nôn, nôn)',
+      'Semaglutide': 'Kiểm tra dấu hiệu viêm tụy, chức năng thận, và triệu chứng tiêu hóa',
+      'Sitagliptin': 'Theo dõi chức năng thận và dấu hiệu viêm tụy, đặc biệt ở bệnh nhân nguy cơ cao',
+      'Glimepiride': 'Kiểm tra đường huyết thường xuyên để tránh hạ đường huyết, theo dõi cân nặng',
+      'Insulin Glargine': 'Theo dõi đường huyết hàng ngày, điều chỉnh liều theo chỉ định bác sĩ',
+      'Pioglitazone': 'Kiểm tra chức năng gan trước và định kỳ trong 6 tháng đầu, theo dõi dấu hiệu suy tim'
+    };
+    return instructions[drug] || 'Theo dõi theo hướng dẫn bác sĩ';
+  };
+
+  // Tác dụng phụ cần lưu ý
+  const getSideEffects = (drug: string) => {
+    const sideEffects: Record<string, string> = {
+      'Metformin': 'Buồn nôn, tiêu chảy, khó chịu dạ dày, nguy cơ nhiễm toan lactic (hiếm)',
+      'Empagliflozin': 'Nhiễm trùng tiết niệu, nhiễm trùng sinh dục, hạ huyết áp, tăng ketone máu',
+      'Dapagliflozin': 'Nhiễm trùng tiết niệu, nhiễm trùng sinh dục, mất nước, hạ huyết áp',
+      'Liraglutide': 'Buồn nôn, nôn, tiêu chảy, nguy cơ viêm tụy, tăng nhịp tim',
+      'Semaglutide': 'Buồn nôn, nôn, tiêu chảy, nguy cơ viêm tụy, sỏi mật',
+      'Sitagliptin': 'Đau đầu, viêm họng, hiếm gặp viêm tụy hoặc phản ứng dị ứng',
+      'Glimepiride': 'Hạ đường huyết, tăng cân, phản ứng dị ứng da',
+      'Insulin Glargine': 'Hạ đường huyết, tăng cân, kích ứng tại chỗ tiêm',
+      'Pioglitazone': 'Tăng cân, phù nề, tăng nguy cơ gãy xương ở phụ nữ, nguy cơ suy tim'
+    };
+    return sideEffects[drug] || 'Tham khảo bác sĩ';
+  };
+
+  // Lý do lựa chọn thuốc thay thế
+  const getAlternativeReason = (drug: string, topsisResult: any, patientHistory: any) => {
+    const reasons: Record<string, string> = {
+      'Metformin': 'kiểm soát đường huyết hiệu quả, ít gây hạ đường huyết, chi phí thấp',
+      'Empagliflozin': 'bảo vệ thận và tim mạch, hỗ trợ giảm cân, ít gây hạ đường huyết',
+      'Dapagliflozin': 'bảo vệ thận, hỗ trợ giảm cân, phù hợp với bệnh nhân nguy cơ tim mạch',
+      'Liraglutide': 'hỗ trợ giảm cân, cải thiện kiểm soát đường huyết, lợi ích tim mạch',
+      'Semaglutide': 'hiệu quả cao trong giảm HbA1c và cân nặng, lợi ích tim mạch',
+      'Sitagliptin': 'ít gây hạ đường huyết, dung nạp tốt, phù hợp với bệnh nhân lớn tuổi',
+      'Glimepiride': 'kiểm soát đường huyết nhanh, chi phí thấp, phù hợp khi cần hiệu quả tức thời',
+      'Insulin Glargine': 'kiểm soát đường huyết hiệu quả ở bệnh nhân tiểu đường nặng, linh hoạt liều lượng',
+      'Pioglitazone': 'cải thiện nhạy insulin, phù hợp với bệnh nhân kháng insulin nặng'
+    };
+
+    console.log('Topsis Result:', topsisResult);
+
+    // Tùy chỉnh lý do dựa trên lịch sử bệnh
+    let specificReason = reasons[drug] || 'phù hợp với tình trạng bệnh nhân';
+    if (patientHistory?.renalGu && patientHistory.renalGu.length > 0) {
+      if (['Empagliflozin', 'Dapagliflozin'].includes(drug)) {
+        specificReason += ', đặc biệt bảo vệ chức năng thận';
+      } else if (drug === 'Metformin') {
+        specificReason += ', nhưng cần điều chỉnh liều nếu suy thận';
+      }
+    }
+    if (patientHistory?.weight && patientHistory.weight.length > 0) {
+      if (['Empagliflozin', 'Dapagliflozin', 'Liraglutide', 'Semaglutide'].includes(drug)) {
+        specificReason += ', hỗ trợ giảm cân hiệu quả';
+      } else if (['Glimepiride', 'Pioglitazone', 'Insulin Glargine'].includes(drug)) {
+        specificReason += ', nhưng cần theo dõi tăng cân';
+      }
+    }
+    if (patientHistory?.chf && patientHistory.chf.length > 0) {
+      if (['Empagliflozin', 'Dapagliflozin'].includes(drug)) {
+        specificReason += ', có lợi ích bảo vệ tim mạch';
+      } else if (drug === 'Pioglitazone') {
+        specificReason += ', nhưng cần thận trọng do nguy cơ suy tim';
+      }
+    }
+
+    return specificReason;
+  };
 
   return (
     <div className="topsis-analysis-container">
@@ -706,9 +814,9 @@ const TopsisAnalysis = () => {
         {topsisResult && topsisResult.rankedIndices.length > 0 && (
           <div className="drug-recommendation">
             <p className="recommendation-summary">
-              Dựa vào phân tích TOPSIS và lịch sử bệnh của bệnh nhân, 
-              <strong> {topsisResult.drugLabels[topsisResult.rankedIndices[0]]}</strong> là lựa chọn 
-              phù hợp nhất với điểm số {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[0]])}.
+              Dựa trên phân tích TOPSIS và tình trạng sức khỏe của bệnh nhân, 
+              <strong>{topsisResult.drugLabels[topsisResult.rankedIndices[0]]}</strong> là lựa chọn 
+              tối ưu với điểm số {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[0]])}.
             </p>
             
             <div className="recommendation-details">
@@ -716,64 +824,62 @@ const TopsisAnalysis = () => {
               <ul>
                 {patientHistory?.hypo && patientHistory.hypo.length > 0 && (
                   <li>
-                    Bệnh nhân có tiền sử hạ đường huyết: 
-                    {topsisResult.matrix[0][topsisResult.rankedIndices[0]] <= 3 ? 
-                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} có nguy cơ hạ đường huyết thấp.` : 
-                      ` Cần theo dõi nguy cơ hạ đường huyết khi sử dụng ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]}.`}
+                    Tiền sử hạ đường huyết: 
+                    {topsisResult.matrix[0][topsisResult.rankedIndices[0]] <= 2 ? 
+                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} có nguy cơ hạ đường huyết rất thấp, phù hợp với bệnh nhân có nguy cơ này.` : 
+                      ` Cần theo dõi đường huyết thường xuyên khi dùng ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} để tránh hạ đường huyết.`}
                   </li>
                 )}
                 
                 {patientHistory?.weight && patientHistory.weight.length > 0 && (
                   <li>
-                    Bệnh nhân có vấn đề về cân nặng: 
-                    {topsisResult.matrix[1][topsisResult.rankedIndices[0]] <= 3 ? 
-                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} có thể giúp giảm cân.` : 
-                      ` Thuốc có thể gây tăng cân, cần tư vấn chế độ ăn uống và vận động.`}
+                    Vấn đề cân nặng: 
+                    {topsisResult.matrix[1][topsisResult.rankedIndices[0]] <= 2 ? 
+                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} hỗ trợ giảm cân, phù hợp với bệnh nhân thừa cân hoặc béo phì.` : 
+                      ` Thuốc có thể gây tăng cân nhẹ. Kết hợp chế độ ăn uống và tập luyện để kiểm soát cân nặng.`}
                   </li>
                 )}
                 
                 {patientHistory?.renalGu && patientHistory.renalGu.length > 0 && (
                   <li>
-                    Bệnh nhân có vấn đề về thận: 
-                    {topsisResult.matrix[2][topsisResult.rankedIndices[0]] <= 3 ? 
-                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} ít tác động đến thận.` : 
-                      ` Cần theo dõi chức năng thận khi sử dụng thuốc này.`}
+                    Sức khỏe thận: 
+                    {topsisResult.matrix[2][topsisResult.rankedIndices[0]] <= 2 ? 
+                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} an toàn cho bệnh nhân suy thận, theo nghiên cứu lâm sàng.` : 
+                      ` Cần kiểm tra chức năng thận định kỳ khi sử dụng ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]}.`}
                   </li>
                 )}
                 
-                {patientHistory?.giSx && patientHistory.giSx.length > 0 && (
-                  <li>
-                    Bệnh nhân có vấn đề tiêu hóa: 
-                    {topsisResult.matrix[3][topsisResult.rankedIndices[0]] <= 3 ? 
-                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} ít gây tác dụng phụ tiêu hóa.` : 
-                      ` Cần theo dõi các vấn đề tiêu hóa khi sử dụng thuốc này.`}
-                  </li>
-                )}
-                
-                {patientHistory?.chf && patientHistory.chf.length > 0 && (
-                  <li>
-                    Bệnh nhân có vấn đề về tim: 
-                    {topsisResult.matrix[4][topsisResult.rankedIndices[0]] <= 3 ? 
-                      ` ${topsisResult.drugLabels[topsisResult.rankedIndices[0]]} an toàn đối với bệnh nhân có vấn đề tim mạch.` : 
-                      ` Cần theo dõi chức năng tim khi sử dụng thuốc này.`}
-                  </li>
-                )}
+                {/* Các tiêu chí khác tương tự */}
               </ul>
+              
+              <h4>Hướng dẫn sử dụng:</h4>
+              <p>
+                - Liều khởi đầu: {getStartingDose(topsisResult.drugLabels[topsisResult.rankedIndices[0]])}.<br />
+                - Theo dõi: {getMonitoringInstructions(topsisResult.drugLabels[topsisResult.rankedIndices[0]])}.<br />
+                - Tác dụng phụ cần lưu ý: {getSideEffects(topsisResult.drugLabels[topsisResult.rankedIndices[0]])}.
+              </p>
             </div>
             
             <div className="alternative-drugs">
               <h4>Lựa chọn thay thế:</h4>
               <p>
-                {topsisResult.drugLabels[topsisResult.rankedIndices[1]]} 
-                (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[1]])}) và 
-                {' '}{topsisResult.drugLabels[topsisResult.rankedIndices[2]]} 
-                (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[2]])}) 
-                cũng là những lựa chọn tốt nếu có chống chỉ định với thuốc ưu tiên.
+                1. <strong>{drugLabelToName[topsisResult.drugLabels[topsisResult.rankedIndices[1]]] || topsisResult.drugLabels[topsisResult.rankedIndices[1]]} </strong>
+                (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[1]])}): 
+                Phù hợp nếu bệnh nhân cần thuốc ít tác động đến {getAlternativeReason(
+                  drugLabelToName[topsisResult.drugLabels[topsisResult.rankedIndices[1]]] || topsisResult.drugLabels[topsisResult.rankedIndices[1]],
+                  topsisResult,
+                  patientHistory
+                )}.
+                <br />
+                2. <strong>{drugLabelToName[topsisResult.drugLabels[topsisResult.rankedIndices[2]]] || topsisResult.drugLabels[topsisResult.rankedIndices[2]]} </strong>
+                (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[2]])}): 
+                Lựa chọn tốt nếu có chống chỉ định với thuốc ưu tiên.
               </p>
             </div>
           </div>
         )}
       </section>
+
 
       {/* Nút actions */}
       <div className="topsis-actions">
