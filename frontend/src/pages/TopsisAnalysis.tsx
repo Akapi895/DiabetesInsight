@@ -55,20 +55,20 @@ const TopsisAnalysis = () => {
   const [patientHistory, setPatientHistory] = useState<any>(null);
   const [topsisData, setTopsisData] = useState<TopsisMatrix>(mockDrugMatrix);
   const [topsisResult, setTopsisResult] = useState<TopsisResult | null>(null);
-  const [customWeights, setCustomWeights] = useState<number[]>(mockDrugMatrix.weights);
+  const [customWeights, setCustomWeights] = useState<number[]>(mockDrugMatrix.weights); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [suitableDrugs, setSuitableDrugs] = useState<string[] | null>(null);
 
-  const drugLabelToName: Record<string, string> = {
-    'MET': 'Metformin',
-    'SU': 'Glimepiride',
-    'TZDs': 'Pioglitazone',
-    'DPP-4': 'Sitagliptin',
-    'SGLT2': 'Empagliflozin',
-    'GLP-1': 'Liraglutide',
-    'Insulins': 'Insulin Glargine'
-  };
+  // const drugLabelToName: Record<string, string> = {
+  //   'MET': 'Metformin',
+  //   'SU': 'Glimepiride',
+  //   'TZDs': 'Pioglitazone',
+  //   'DPP-4': 'Sitagliptin',
+  //   'SGLT2': 'Empagliflozin',
+  //   'GLP-1': 'Liraglutide',
+  //   'Insulins': 'Insulin Glargine'
+  // };
 
   // Lấy thông tin bệnh nhân
   useEffect(() => {
@@ -530,7 +530,7 @@ const TopsisAnalysis = () => {
                   <tr>
                     <th>Tiêu chí</th>
                     <th>Trọng số</th>
-                    <th>Loại tiêu chí</th>
+                    {/* <th>Loại tiêu chí</th> */}
                     <th>Điều chỉnh</th>
                   </tr>
                 </thead>
@@ -539,7 +539,7 @@ const TopsisAnalysis = () => {
                     <tr key={index}>
                       <td>{criterion}</td>
                       <td>{formatNumber(topsisResult.weights[index])}</td>
-                      <td>{topsisResult.criteriaTypes[index] === 'benefit' ? 'Benefit (càng cao càng tốt)' : 'Cost (càng thấp càng tốt)'}</td>
+                      {/* <td>{topsisResult.criteriaTypes[index] === 'benefit' ? 'Benefit (càng cao càng tốt)' : 'Cost (càng thấp càng tốt)'}</td> */}
                       <td>
                         <input 
                           type="range" 
@@ -661,20 +661,29 @@ const TopsisAnalysis = () => {
                 <thead>
                   <tr>
                     <th>Tiêu chí</th>
-                    <th>Loại</th>
                     <th>Giải pháp lý tưởng (A*)</th>
                     <th>Giải pháp tiêu cực (A-)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {topsisResult.criteriaLabels.map((criterion, index) => (
-                    <tr key={index}>
-                      <td>{criterion}</td>
-                      <td>{topsisResult.criteriaTypes[index]}</td>
-                      <td>{formatNumber(topsisResult.idealSolution[index])}</td>
-                      <td>{formatNumber(topsisResult.negativeSolution[index])}</td>
-                    </tr>
-                  ))}
+                  {topsisResult.criteriaLabels.map((criterion, index) => {
+                    const ideal = topsisResult.idealSolution[index];
+                    const negative = topsisResult.negativeSolution[index];
+                    // Kiểm tra nếu cả hai đều hợp lệ (không phải null, undefined, NaN)
+                    if (
+                      ideal !== null && ideal !== undefined && !isNaN(ideal) &&
+                      negative !== null && negative !== undefined && !isNaN(negative)
+                    ) {
+                      return (
+                        <tr key={index}>
+                          <td>{criterion}</td>
+                          <td>{formatNumber(ideal)}</td>
+                          <td>{formatNumber(negative)}</td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })}
                 </tbody>
               </table>
             </div>
@@ -685,10 +694,10 @@ const TopsisAnalysis = () => {
               Đối với tiêu chí thuộc loại <strong>benefit</strong>, giá trị tốt nhất là 
               giá trị lớn nhất và giá trị xấu nhất là giá trị nhỏ nhất.
             </p>
-            <p>
+            {/* <p>
               Đối với tiêu chí thuộc loại <strong>cost</strong>, giá trị tốt nhất là 
               giá trị nhỏ nhất và giá trị xấu nhất là giá trị lớn nhất.
-            </p>
+            </p> */}
           </div>
         </div>
       </section>
@@ -815,7 +824,7 @@ const TopsisAnalysis = () => {
           <div className="drug-recommendation">
             <p className="recommendation-summary">
               Dựa trên phân tích TOPSIS và tình trạng sức khỏe của bệnh nhân, 
-              <strong>{topsisResult.drugLabels[topsisResult.rankedIndices[0]]}</strong> là lựa chọn 
+              <strong> {topsisResult.drugLabels[topsisResult.rankedIndices[0]]}</strong> là lựa chọn 
               tối ưu với điểm số {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[0]])}.
             </p>
             
@@ -863,17 +872,25 @@ const TopsisAnalysis = () => {
             <div className="alternative-drugs">
               <h4>Lựa chọn thay thế:</h4>
               <p>
-                1. <strong>{drugLabelToName[topsisResult.drugLabels[topsisResult.rankedIndices[1]]] || topsisResult.drugLabels[topsisResult.rankedIndices[1]]} </strong>
-                (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[1]])}): 
-                Phù hợp nếu bệnh nhân cần thuốc ít tác động đến {getAlternativeReason(
-                  drugLabelToName[topsisResult.drugLabels[topsisResult.rankedIndices[1]]] || topsisResult.drugLabels[topsisResult.rankedIndices[1]],
-                  topsisResult,
-                  patientHistory
-                )}.
-                <br />
-                2. <strong>{drugLabelToName[topsisResult.drugLabels[topsisResult.rankedIndices[2]]] || topsisResult.drugLabels[topsisResult.rankedIndices[2]]} </strong>
-                (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[2]])}): 
-                Lựa chọn tốt nếu có chống chỉ định với thuốc ưu tiên.
+                {topsisResult.drugLabels[topsisResult.rankedIndices[1]] && (
+                  <>
+                    1. <strong>{topsisResult.drugLabels[topsisResult.rankedIndices[1]]} </strong>
+                    (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[1]])}): 
+                    Phù hợp nếu bệnh nhân cần thuốc ít tác động đến {getAlternativeReason(
+                      topsisResult.drugLabels[topsisResult.rankedIndices[1]],
+                      topsisResult,
+                      patientHistory
+                    )}.
+                    <br />
+                  </>
+                )}
+                {topsisResult.drugLabels[topsisResult.rankedIndices[2]] && (
+                  <>
+                    2. <strong>{topsisResult.drugLabels[topsisResult.rankedIndices[2]]} </strong>
+                    (điểm số: {formatNumber(topsisResult.relativeCloseness[topsisResult.rankedIndices[2]])}): 
+                    Lựa chọn tốt nếu có chống chỉ định với thuốc ưu tiên.
+                  </>
+                )}
               </p>
             </div>
           </div>
