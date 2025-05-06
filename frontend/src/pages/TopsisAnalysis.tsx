@@ -557,7 +557,7 @@ const TopsisAnalysis = () => {
             </div>
           )}
           
-          <div className="patient-relevance">
+          {/* <div className="patient-relevance">
             <h4>Trọng số được điều chỉnh theo lịch sử bệnh:</h4>
             <div className="history-relevance">
               {patientHistory?.hypo && patientHistory.hypo.length > 0 && (
@@ -596,7 +596,7 @@ const TopsisAnalysis = () => {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
