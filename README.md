@@ -18,7 +18,7 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/DiabetesInsight.git
+git clone https://github.com/Akapi895/DiabetesInsight.git
 cd DiabetesInsight
 pip install -r requirements.txt
 ```
